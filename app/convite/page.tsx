@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import { supabase } from "@/lib/supabase";
 import { SiGooglemaps, SiWaze } from "react-icons/si";
+import PhotoCarousel from "@/components/PhotoCarousel";
 
 // ── CONFIGURAÇÕES GLOBAIS ──
 const SCRIPT_URL =
@@ -238,40 +239,9 @@ export default function ConviteHome() {
           </motion.div>
 
           {/* 2. CARROSSEL */}
-          <div
-            ref={carouselRef}
-            className="w-full mt-6 mb-10 flex snap-x snap-mandatory hide-scrollbar gap-4 pb-4"
-            style={{
-              overflowX: "auto",
-              WebkitOverflowScrolling: "touch",
-              paddingLeft: "1.5rem",
-              paddingRight: "1.5rem",
-              isolation: "isolate",
-            }}
-          >
-            {!loadingFotos &&
-              carouselFotos.map((foto, index) => (
-                <div
-                  key={foto.id}
-                  className="snap-center shrink-0 relative rounded-2xl overflow-hidden shadow-lg border-4 border-white/90"
-                  style={{
-                    width: "min(78vw, 300px)",
-                    aspectRatio: "3/4",
-                    contain: "layout paint",
-                  }}
-                >
-                  <Image
-                    src={foto.image_url}
-                    alt="Foto do casal"
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 78vw, 300px"
-                    priority={index === 0}
-                    loading={index === 0 ? "eager" : "lazy"}
-                  />
-                </div>
-              ))}
-          </div>
+          <section id="galeria" className="w-full">
+   <PhotoCarousel />
+</section>
 
           {/* 3. RSVP */}
           <section className="w-full max-w-95 px-6 mb-16 relative">
@@ -508,8 +478,8 @@ export default function ConviteHome() {
                 Pedimos gentilmente que evitem a cor das madrinhas:
               </p>
               <div className="flex flex-col items-center gap-2">
-                <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#B2C2D1]" />
-                <span className="text-[0.6rem] font-bold text-[#7BC0E3] tracking-widest uppercase mt-1">
+                <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#B3CEE5]" />
+                <span className="text-[0.6rem] font-bold text-[#B3CEE5] tracking-widest uppercase mt-1">
                   Azul Serenity
                 </span>
               </div>

@@ -29,6 +29,7 @@ interface Presente {
   image_url: string;
   is_custom: boolean;
   link?: string;
+  category: string; // <-- 1. Adicionado aqui
 }
 
 const INITIAL_GIFT: Presente = { 
@@ -36,7 +37,8 @@ const INITIAL_GIFT: Presente = {
   price: 0, 
   image_url: "", 
   is_custom: false,
-  link: ""
+  link: "",
+  category: "casa" // <-- 2. Valor padrão definido aqui
 };
 
 export default function AdminPage() {
@@ -49,7 +51,7 @@ export default function AdminPage() {
   const [fotos, setFotos] = useState<Foto[]>([]);
   const [presentes, setPresentes] = useState<Presente[]>([]);
   const [editingGift, setEditingGift] = useState<Presente>(INITIAL_GIFT);
-
+  
   // O nome do seu bucket no Supabase
   const BUCKET_NAME = "casamento-imagens";
 
@@ -141,12 +143,11 @@ export default function AdminPage() {
     
     for (const file of files) {
       try {
-        
-const compressed = await imageCompression(file, { 
-  maxSizeMB: 0.2, 
-  maxWidthOrHeight: 1080, 
-  fileType: 'image/webp' 
-});
+        const compressed = await imageCompression(file, { 
+          maxSizeMB: 0.2, 
+          maxWidthOrHeight: 1080, 
+          fileType: 'image/webp' 
+        });
         const cleanName = file.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9.]/g, "");
         const fileName = `foto-${Date.now()}-${cleanName}`;
         
@@ -256,47 +257,44 @@ const compressed = await imageCompression(file, {
              </div>
              
              <DragDropContext onDragEnd={onDragEnd}>
-  <Droppable droppableId="fotos" direction="horizontal">
-    {(provided: DroppableProvided) => (
-      <div 
-        {...provided.droppableProps} 
-        ref={provided.innerRef} 
-        // 1. Removido o 'gap-6' que quebrava o cálculo. Adicionado '-m-3' para compensar a margem dos filhos.
-        className="flex flex-wrap justify-start min-h-[200px] pt-4 -m-3"
-      >
-        {fotos.map((foto, index) => (
-          <Draggable key={foto.id} draggableId={foto.id} index={index}>
-            {(providedDrag: DraggableProvided, snapshot) => (
-              <div 
-                ref={providedDrag.innerRef} 
-                {...providedDrag.draggableProps} 
-                {...providedDrag.dragHandleProps} 
-                // 2. Adicionado 'm-3' aqui. 
-                // 3. Efeito visual extra quando está segurando a foto (snapshot.isDragging)
-                className={`relative group w-28 h-36 m-3 cursor-grab active:cursor-grabbing transition-transform ${
-                  snapshot.isDragging ? 'scale-110 shadow-2xl z-50' : 'hover:scale-105'
-                }`}
-              >
-                <div className="w-full h-full rounded-2xl overflow-hidden border-2 border-white shadow-md bg-gray-50 relative pointer-events-none">
-                  <Image src={foto.image_url} alt="Foto" fill className="object-cover" sizes="112px" />
-                </div>
-                
-                <button 
-                  onClick={(e) => { e.stopPropagation(); deleteItem("galeria", foto.id); }} 
-                  className="absolute -top-3 -right-3 bg-red-500 text-white w-8 h-8 rounded-full text-xs flex items-center justify-center shadow-lg md:opacity-0 group-hover:opacity-100 transition-opacity"
-                  type="button"
-                >
-                  ✕
-                </button>
-              </div>
-            )}
-          </Draggable>
-        ))}
-        {provided.placeholder}
-      </div>
-    )}
-  </Droppable>
-</DragDropContext>
+              <Droppable droppableId="fotos" direction="horizontal">
+                {(provided: DroppableProvided) => (
+                  <div 
+                    {...provided.droppableProps} 
+                    ref={provided.innerRef} 
+                    className="flex flex-wrap justify-start min-h-[200px] pt-4 -m-3"
+                  >
+                    {fotos.map((foto, index) => (
+                      <Draggable key={foto.id} draggableId={foto.id} index={index}>
+                        {(providedDrag: DraggableProvided, snapshot) => (
+                          <div 
+                            ref={providedDrag.innerRef} 
+                            {...providedDrag.draggableProps} 
+                            {...providedDrag.dragHandleProps} 
+                            className={`relative group w-28 h-36 m-3 cursor-grab active:cursor-grabbing transition-transform ${
+                              snapshot.isDragging ? 'scale-110 shadow-2xl z-50' : 'hover:scale-105'
+                            }`}
+                          >
+                            <div className="w-full h-full rounded-2xl overflow-hidden border-2 border-white shadow-md bg-gray-50 relative pointer-events-none">
+                              <Image src={foto.image_url} alt="Foto" fill className="object-cover" sizes="112px" />
+                            </div>
+                            
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); deleteItem("galeria", foto.id); }} 
+                              className="absolute -top-3 -right-3 bg-red-500 text-white w-8 h-8 rounded-full text-xs flex items-center justify-center shadow-lg md:opacity-0 group-hover:opacity-100 transition-opacity"
+                              type="button"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
              <p className="text-xs text-gray-400 mt-8 italic">* Arraste as fotos para mudar a ordem.</p>
           </div>
         ) : (
@@ -318,6 +316,17 @@ const compressed = await imageCompression(file, {
                     <input type="file" accept="image/*" hidden onChange={handleUploadGiftImage} disabled={loading} />
                   </label>
                 </div>
+
+                {/* 3. LIGAÇÃO DO SELECT DIRETO NO ESTADO DO PRESENTE */}
+                <label className="block text-sm font-medium mb-1">Destino do Presente</label>
+                <select 
+                  value={editingGift.category || "casa"} 
+                  onChange={(e) => setEditingGift({...editingGift, category: e.target.value})}
+                  className="w-full p-2 border rounded-md mb-4 bg-white outline-none"
+                >
+                  <option value="casa">Casa</option>
+                  <option value="lua de mel">Lua de Mel</option>
+                </select>
 
                 <input placeholder="Título (Ex: Jogo de Panelas)" value={editingGift.title} onChange={e => setEditingGift({...editingGift, title: e.target.value})} className="w-full p-3 rounded-xl border text-sm outline-none focus:border-[#6B93B8]" />
                 
@@ -353,6 +362,10 @@ const compressed = await imageCompression(file, {
                       <p className="font-bold text-sm text-gray-800">{p.title}</p>
                       <p className="text-xs text-[#7BC0E3] font-semibold mt-1">
                         {p.is_custom ? "Cota (PIX/Livre)" : `R$ ${p.price}`}
+                        {/* 4. Indicação de Categoria na Listagem */}
+                        <span className="ml-2 text-gray-400 font-medium capitalize border-l border-gray-200 pl-2">
+                          {p.category || 'casa'}
+                        </span>
                       </p>
                       {!p.is_custom && p.link && (
                         <a href={p.link} target="_blank" className="text-[10px] text-gray-400 underline mt-1 block">Ver link</a>
