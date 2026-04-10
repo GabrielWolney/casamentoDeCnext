@@ -29,12 +29,14 @@ export default function CapaConvite() {
         className="relative w-full max-w-[320px] aspect-[4/3] max-h-[40vh]"
       >
         <Image
-          src="/convite.webp"
-          alt="Envelope do Convite"
-          fill
-          priority
-          className="object-contain drop-shadow-sm"
-        />
+  src="/convite.webp"
+  alt="Envelope do Convite"
+  fill
+  priority
+  // ADICIONE ESTA LINHA
+  sizes="(max-width: 768px) 100vw, 320px"
+  className="object-contain drop-shadow-sm"
+/>
       </motion.div>
 
       <motion.div

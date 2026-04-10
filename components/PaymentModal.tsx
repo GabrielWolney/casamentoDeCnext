@@ -20,12 +20,29 @@ interface PaymentModalProps {
   } | null;
 }
 
-export default function PaymentModal({ isOpen, onClose, gift }: PaymentModalProps) {
+export default function PaymentModal({
+  isOpen,
+  onClose,
+  gift,
+}: PaymentModalProps) {
   const [customValue, setCustomValue] = useState<string>("");
   const [currentPixCode, setCurrentPixCode] = useState<string>("");
   const [copied, setCopied] = useState(false);
 
-  // Zera os estados de forma assíncrona para evitar "cascading renders" no React 19
+  // ── Bloqueia scroll do body no iOS quando modal está aberto ──
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const scrollY = window.scrollY;
+    document.body.style.cssText = `position:fixed;top:-${scrollY}px;width:100%;overflow-y:scroll`;
+
+    return () => {
+      document.body.style.cssText = "";
+      window.scrollTo(0, scrollY);
+    };
+  }, [isOpen]);
+
+  // ── Reset de estado ao abrir/fechar ──
   useEffect(() => {
     const resetTimer = setTimeout(() => {
       setCustomValue("");
@@ -40,22 +57,38 @@ export default function PaymentModal({ isOpen, onClose, gift }: PaymentModalProp
     return () => clearTimeout(resetTimer);
   }, [gift, isOpen]);
 
-  // Atualiza o Pix dinamicamente ao digitar, também protegido com setTimeout
+  // ── Gera Pix dinamicamente ao digitar (cota livre) ──
   useEffect(() => {
     if (gift?.is_custom) {
       const updatePix = setTimeout(() => {
         const val = parseFloat(customValue);
         if (val > 0) {
-          const pix = new PixPayload(CHAVE_PIX, NOME_NOIVOS, CIDADE_NOIVOS, "COTA", val);
+          const pix = new PixPayload(
+            CHAVE_PIX,
+            NOME_NOIVOS,
+            CIDADE_NOIVOS,
+            "COTA",
+            val
+          );
           setCurrentPixCode(pix.getPayload());
         } else {
           setCurrentPixCode("");
         }
       }, 0);
-      
+
       return () => clearTimeout(updatePix);
     }
   }, [customValue, gift]);
+
+  // ── Fecha com tecla Escape ──
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [isOpen, onClose]);
 
   if (!isOpen || !gift) return null;
 
@@ -65,7 +98,9 @@ export default function PaymentModal({ isOpen, onClose, gift }: PaymentModalProp
       await navigator.clipboard.writeText(currentPixCode);
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
-      alert("Pix copiado com sucesso! \n\nEnvie o comprovante de pagamento no WhatsApp do Davi ou da Camila!");
+      alert(
+        "Pix copiado com sucesso! \n\nEnvie o comprovante de pagamento no WhatsApp do Davi ou da Camila!"
+      );
     } catch (err) {
       console.error("Falha ao copiar:", err);
     }
@@ -73,7 +108,10 @@ export default function PaymentModal({ isOpen, onClose, gift }: PaymentModalProp
 
   return (
     <div
-      className="fixed inset-0 bg-black/40 z-2000 flex items-end md:items-center justify-center backdrop-blur-sm transition-opacity duration-300"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Pagamento: ${gift.title}`}
+      className="fixed inset-0 bg-black/40 z-[2000] flex items-end md:items-center justify-center backdrop-blur-sm transition-opacity duration-300"
       onClick={onClose}
     >
       <div
@@ -81,13 +119,16 @@ export default function PaymentModal({ isOpen, onClose, gift }: PaymentModalProp
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="absolute top-5 right-5 bg-transparent border-none text-3xl cursor-pointer text-deep-blue"
+          aria-label="Fechar"
+          className="absolute top-5 right-5 bg-transparent border-none text-3xl cursor-pointer text-[#1a2634] hover:opacity-60 transition-opacity"
           onClick={onClose}
         >
           &times;
         </button>
 
-        <h2 className="font-display text-2xl text-deep-blue mb-2">{gift.title}</h2>
+        <h2 className="font-[family-name:var(--font-crimson)] text-2xl text-[#1a2634] mb-2">
+          {gift.title}
+        </h2>
 
         {/* COTA LIVRE */}
         {gift.is_custom ? (
@@ -99,32 +140,41 @@ export default function PaymentModal({ isOpen, onClose, gift }: PaymentModalProp
                 type="number"
                 placeholder="0.00"
                 step="0.01"
+                min="1"
                 value={customValue}
                 onChange={(e) => setCustomValue(e.target.value)}
+                aria-label="Valor do presente"
                 className="bg-transparent border-none outline-none text-[1.8rem] font-semibold text-[#333] w-30 text-center p-0 m-0 leading-none h-auto"
               />
             </div>
           </div>
         ) : (
           /* PREÇO FIXO */
-          <p className="text-[1.8rem] text-primary-blue mb-5 font-semibold">
+          <p className="text-[1.8rem] text-[#1278BC] mb-5 font-semibold">
             {formatCurrency(gift.price || 0)}
           </p>
         )}
 
         {/* CAIXA DO CÓDIGO PIX */}
-        <div className="bg-[#F4F9FD] p-5 rounded-xl mt-4 border border-dashed border-[#7BC0E3] break-all font-mono text-deep-blue">
-          <span className="text-[0.8rem] font-bold block mb-1">Copie e Cole no App do Banco:</span>
-          <div className="text-[0.8rem] text-[#555] max-h-20 overflow-y-auto">
+        <div
+          role="region"
+          aria-label="Código Pix"
+          className="bg-[#F4F9FD] p-5 rounded-xl mt-4 border border-dashed border-[#7BC0E3] break-all font-mono text-[#1a2634]"
+        >
+          <span className="text-[0.8rem] font-bold block mb-1">
+            Copie e Cole no App do Banco:
+          </span>
+          <div className="text-[0.8rem] text-[#555] max-h-20 overflow-y-auto select-all">
             {currentPixCode ? currentPixCode : "Aguardando valor..."}
           </div>
         </div>
 
         <button
           onClick={handleCopy}
-          className="bg-[linear-gradient(135deg,#1C8BD1_0%,#1278BC_100%)] text-white border-none py-3 px-8 rounded-[14px] font-semibold cursor-pointer w-full shadow-[0_8px_20px_rgba(91,141,184,0.25)] transition-transform active:scale-95 mt-5 flex items-center justify-center gap-2"
+          disabled={!currentPixCode}
+          className="bg-[linear-gradient(135deg,#1C8BD1_0%,#1278BC_100%)] text-white border-none py-3 px-8 rounded-[14px] font-semibold cursor-pointer w-full shadow-[0_8px_20px_rgba(91,141,184,0.25)] transition-transform active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed mt-5 flex items-center justify-center gap-2"
         >
-          {copied ? "Copiado!" : "Copiar Código Pix"}
+          {copied ? "✓ Copiado!" : "Copiar Código Pix"}
         </button>
       </div>
     </div>

@@ -20,8 +20,7 @@ interface Gift {
 export default function GiftGrid() {
   const [gifts, setGifts] = useState<Gift[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  // Controle do Modal
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedGift, setSelectedGift] = useState<Gift | null>(null);
 
@@ -33,9 +32,10 @@ export default function GiftGrid() {
         .order("created_at", { ascending: false });
 
       if (data) {
-        // Ordena: Primeiro as Cotas Livres, depois os fixos do mais caro pro mais barato
         const cotas = data.filter((g) => g.is_custom);
-        const normais = data.filter((g) => !g.is_custom).sort((a, b) => b.price - a.price);
+        const normais = data
+          .filter((g) => !g.is_custom)
+          .sort((a, b) => b.price - a.price);
         setGifts([...cotas, ...normais]);
       }
       setLoading(false);
@@ -49,11 +49,19 @@ export default function GiftGrid() {
   };
 
   if (loading) {
-    return <p className="text-center col-span-full opacity-60">Embrulhando presentes...</p>;
+    return (
+      <p className="text-center col-span-full opacity-60">
+        Embrulhando presentes...
+      </p>
+    );
   }
 
   if (gifts.length === 0) {
-    return <p className="text-center col-span-full opacity-60">Nenhum presente na lista ainda.</p>;
+    return (
+      <p className="text-center col-span-full opacity-60">
+        Nenhum presente na lista ainda.
+      </p>
+    );
   }
 
   return (
@@ -61,7 +69,7 @@ export default function GiftGrid() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {gifts.map((gift) => (
           <div key={gift.id} className="glass-card relative flex flex-col">
-            
+
             {/* Imagem do Presente */}
             <div className="h-[180px] bg-white/40 rounded-[16px] mb-5 relative overflow-hidden">
               <Image
@@ -69,12 +77,15 @@ export default function GiftGrid() {
                 alt={gift.title}
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 100vw, 33vw"
+                // sizes correto: considera padding lateral e colunas reais
+                sizes="(max-width: 768px) calc(100vw - 48px), (max-width: 1280px) calc(50vw - 48px), 400px"
               />
             </div>
 
             {/* Info */}
-            <h3 className="font-display text-xl font-semibold">{gift.title}</h3>
+            <h3 className="font-[family-name:var(--font-crimson)] text-xl font-semibold text-[#1a2634]">
+              {gift.title}
+            </h3>
             <p className="font-semibold text-[1.1rem] my-[5px] mb-[15px] text-[#1a2634]">
               {gift.is_custom ? "Valor Livre" : formatCurrency(gift.price)}
             </p>
@@ -90,16 +101,17 @@ export default function GiftGrid() {
                 </button>
               ) : (
                 <>
-                  {gift.payment_link_mp && gift.payment_link_mp !== "null" && (
-                    <a
-                      href={gift.payment_link_mp}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-[linear-gradient(135deg,#1C8BD1_0%,#1278BC_100%)] text-white border-none py-2 px-4 rounded-[14px] font-semibold text-center flex-1 shadow-[0_8px_20px_rgba(91,141,184,0.25)] hover:scale-[0.98] transition-transform"
-                    >
-                      Cartão
-                    </a>
-                  )}
+                  {gift.payment_link_mp &&
+                    gift.payment_link_mp !== "null" && (
+                      <a
+                        href={gift.payment_link_mp}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-[linear-gradient(135deg,#1C8BD1_0%,#1278BC_100%)] text-white border-none py-2 px-4 rounded-[14px] font-semibold text-center flex-1 shadow-[0_8px_20px_rgba(91,141,184,0.25)] hover:scale-[0.98] transition-transform"
+                      >
+                        Cartão
+                      </a>
+                    )}
                   <button
                     onClick={() => openModal(gift)}
                     className="bg-transparent text-[#1a2634] border border-[#1a2634] py-2 px-4 rounded-[14px] font-medium flex-1 hover:bg-black/5 transition-colors"

@@ -7,16 +7,18 @@ import { motion } from "framer-motion";
 export default function PresentesPage() {
   return (
     <>
-      {/* ── FUNDO ESTÁTICO UNIFICADO ── */}
-      <div 
-        className="fixed inset-0 z-[-1] bg-[#FDFDFD]"
+      {/* ── FUNDO — gradiente CSS nativo, zero filter blur, zero stacking context extra ── */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 z-[-1]"
         style={{
-          backgroundImage: `
-            radial-gradient(circle at 15% 15%, rgba(123, 192, 227, 0.25) 0%, transparent 40%),
-            radial-gradient(circle at 85% 40%, rgba(123, 192, 227, 0.2) 0%, transparent 45%),
-            radial-gradient(circle at 20% 80%, rgba(174, 204, 228, 0.3) 0%, transparent 50%)
+          background: `
+            radial-gradient(ellipse 60% 50% at 15% 15%, rgba(123,192,227,0.28) 0%, transparent 55%),
+            radial-gradient(ellipse 55% 45% at 85% 40%, rgba(123,192,227,0.22) 0%, transparent 55%),
+            radial-gradient(ellipse 50% 55% at 20% 80%, rgba(174,204,228,0.32) 0%, transparent 55%),
+            radial-gradient(ellipse 45% 50% at 80% 90%, rgba(179,212,233,0.2) 0%, transparent 55%),
+            #FDFDFD
           `,
-          filter: 'blur(60px)'
         }}
       />
 
@@ -25,14 +27,14 @@ export default function PresentesPage() {
 
         <div className="pt-36 md:pt-44 max-w-7xl mx-auto px-6">
           <header className="text-center mb-16">
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="font-[family-name:var(--font-crimson)] text-5xl text-[#333] mb-4"
             >
               Lista de Presentes
             </motion.h1>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}

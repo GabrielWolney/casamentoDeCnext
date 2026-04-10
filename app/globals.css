@@ -1,62 +1,68 @@
+/* ⚠️ REGRA CRÍTICA: @import DEVE vir antes de qualquer @layer */
+@import "tailwindcss";
 
 @layer base {
   html {
-    /* Faz o scroll ser suave em todo o site */
-    scroll-behavior: smooth !important;
-  }
-}@import "tailwindcss";
+    scroll-behavior: smooth;
 
-
-@theme {
-  --color-deep-blue: #1a2634;
-  --color-primary-blue: #1278BC;
-  --color-serenity: #9bbde2;
-  
-  /* Mapeando as fontes do Next.js para o Tailwind */
-  --font-display: var(--font-cormorant), 'Playfair Display', serif;
-  --font-body: var(--font-jakarta), 'Plus Jakarta Sans', sans-serif;
-}
-
-@layer base {
-  :root {
-    /* ── AS SUAS VARIÁVEIS ORIGINAIS DO GLASS ── */
-    --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.15) 100%);
-    --glass-filter: blur(48px) saturate(220%);
-    --glass-border-light: 1px solid rgba(255, 255, 255, 0.5);
-    --glass-border-dark: 1px solid rgba(255, 255, 255, 0.1);
-    --glass-shadow: 
-        0 24px 48px -12px rgba(18, 120, 188, 0.12), 
-        inset 1px 1px 2px 0 rgba(255, 255, 255, 0.6),
-        inset -1px -1px 1px 0 rgba(255, 255, 255, 0.05);
-    --radius-card: 28px;
-    --radius-btn: 14px;
-    --primary-gradient: linear-gradient(135deg, #1C8BD1 0%, #1278BC 100%);
   }
 
   body {
     background-color: #F4F9FD;
-    background-image: 
-        radial-gradient(at 10% 10%, rgba(93, 174, 214, 0.35) 0px, transparent 50%),
-        radial-gradient(at 90% 90%, rgba(159, 210, 236, 0.4) 0px, transparent 50%);
+    background-image:
+      radial-gradient(at 10% 10%, rgba(93,174,214,0.35) 0px, transparent 50%),
+      radial-gradient(at 90% 90%, rgba(159,210,236,0.4) 0px, transparent 50%);
     background-attachment: fixed;
     color: var(--color-deep-blue);
     font-family: var(--font-body);
     line-height: 1.7;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    min-height: 100dvh;
+    /* overscroll e overflow-scrolling no mesmo bloco */
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* Textura de ruído em SVG (Preservada!) */
   body::before {
     content: '';
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none; z-index: 9999; opacity: 0.08;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    will-change: auto;
+  }
+}
+
+@theme {
+  --color-deep-blue: #1a2634;
+  --color-primary-blue: #1278BC;
+  --color-serenity: #9bbde2;
+  --font-display: var(--font-cormorant), 'Playfair Display', serif;
+  --font-body: var(--font-jakarta), 'Plus Jakarta Sans', sans-serif;
+}
+
+@layer base {
+  :root {
+    --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 100%);
+    --glass-filter: blur(20px) saturate(180%);
+    --glass-border-light: 1px solid rgba(255,255,255,0.5);
+    --glass-border-dark: 1px solid rgba(255,255,255,0.1);
+    --glass-shadow:
+      0 24px 48px -12px rgba(18,120,188,0.12),
+      inset 1px 1px 2px 0 rgba(255,255,255,0.6),
+      inset -1px -1px 1px 0 rgba(255,255,255,0.05);
+    --radius-card: 28px;
+    --radius-btn: 14px;
+    --primary-gradient: linear-gradient(135deg,#1C8BD1 0%,#1278BC 100%);
   }
 }
 
 @layer utilities {
-  /* O seu componente mestre de vidro agora tem física de levitação */
   .glass-card {
     background: var(--glass-bg);
     backdrop-filter: var(--glass-filter);
@@ -67,61 +73,36 @@
     border-bottom: var(--glass-border-dark);
     border-radius: var(--radius-card);
     box-shadow: var(--glass-shadow);
-    padding: clamp(24px, 5vw, 40px);
-    
-    /* Trocamos 'transform' por 'all' para animar sombra e cor juntas */
-    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-    transform: translateZ(0) translateY(0); 
-    backface-visibility: hidden;
-    will-change: transform, box-shadow, background;
-  backface-visibility: hidden;
-  transform: translateZ(0); 
-}
+    padding: clamp(24px,5vw,40px);
+    transition: transform 0.5s cubic-bezier(0.2,0.8,0.2,1),
+                box-shadow 0.5s cubic-bezier(0.2,0.8,0.2,1);
+    isolation: isolate;
+    contain: layout style;
+  }
 
-  /* A MÁGICA DA LEVITAÇÃO AQUI (Desktop e Toque no Mobile) */
   @media (hover: hover) and (pointer: fine) {
     .glass-card:hover {
-      /* Levanta a placa 8 pixels para cima */
-      transform: translateZ(0) translateY(-8px); 
-      
-      /* A sombra expande, fica mais suave e mais azulada, provando que a placa subiu */
-      box-shadow: 
-          0 40px 80px -15px rgba(18, 120, 188, 0.25), 
-          inset 1px 1px 3px 0 rgba(255, 255, 255, 0.9), /* Brilho da borda fica mais forte */
-          inset -1px -1px 1px 0 rgba(255, 255, 255, 0.05);
-          
-      /* O vidro clareia minimamente ao se aproximar da "luz" da tela */
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.2) 100%);
+      transform: translateY(-8px);
+      box-shadow:
+        0 40px 80px -15px rgba(18,120,188,0.25),
+        inset 1px 1px 3px 0 rgba(255,255,255,0.9),
+        inset -1px -1px 1px 0 rgba(255,255,255,0.05);
+      background: linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.2) 100%);
     }
   }
 }
-/* Esconde a scrollbar mas mantém o funcionamento */
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
+
+/* ─── Scrollbar ─── */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ─── Mobile glass otimizado ─── */
 @media (max-width: 768px) {
   .glass-card {
-    backdrop-filter: blur(12px); /* Reduz de 48px para 12px no mobile */
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(8px) saturate(150%);
+    -webkit-backdrop-filter: blur(8px) saturate(150%);
   }
-}
-/* No globals.css */
-html, body {
-  /* Impede o Safari de tentar dar scroll elástico em elementos fixos */
-  overscroll-behavior-y: none;
-  /* Melhora a fluidez do scroll no motor WebKit */
-  -webkit-overflow-scrolling: touch;
-  /* Garante que o cálculo de 100vh não mude drasticamente quando a barra some */
-  height: -webkit-fill-available;
-}
-
-/* Forçamos a aceleração de hardware em qualquer coisa que tenha blur */
-.backdrop-blur-md, .backdrop-blur-lg {
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  will-change: transform, backdrop-filter;
 }
