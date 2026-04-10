@@ -151,13 +151,21 @@ export default function ConviteHome() {
           </motion.div>
 
           {/* 2. CARROSSEL */}
-          <div ref={carouselRef} className="w-full mt-6 mb-10 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 px-6 pb-4">
-            {!loadingFotos && carouselFotos.map((foto) => (
-              <div key={foto.id} className="snap-center shrink-0 w-[78vw] max-w-75 aspect-3/4 relative rounded-2xl overflow-hidden shadow-lg border-4 border-white/90">
-                <Image src={foto.image_url} alt="Foto do Casal" fill className="object-cover" sizes="300px" />
-              </div>
-            ))}
-          </div>
+<div ref={carouselRef} className="w-full mt-6 mb-10 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 px-6 pb-4">
+  {!loadingFotos && carouselFotos.map((foto, index) => (
+    <div key={foto.id} className="snap-center shrink-0 w-[78vw] max-w-75 aspect-3/4 relative rounded-2xl overflow-hidden shadow-lg border-4 border-white/90">
+      <Image 
+  src={foto.image_url} 
+  alt="Foto" 
+  fill 
+  className="object-cover" 
+  // Isto diz ao navegador: "No telemóvel, esta imagem só ocupa 80% da largura, não carregues nada gigante"
+  sizes="(max-width: 768px) 80vw, 300px" 
+  priority={index === 0}
+/>
+    </div>
+  ))}
+</div>
 
           {/* 3. RSVP */}
           <section className="w-full max-w-95 px-6 mb-16 relative">

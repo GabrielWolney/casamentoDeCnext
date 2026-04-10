@@ -74,7 +74,9 @@
     transform: translateZ(0) translateY(0); 
     backface-visibility: hidden;
     will-change: transform, box-shadow, background;
-  }
+  backface-visibility: hidden;
+  transform: translateZ(0); 
+}
 
   /* A MÁGICA DA LEVITAÇÃO AQUI (Desktop e Toque no Mobile) */
   @media (hover: hover) and (pointer: fine) {
@@ -100,4 +102,10 @@
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+@media (max-width: 768px) {
+  .glass-card {
+    backdrop-filter: blur(12px); /* Reduz de 48px para 12px no mobile */
+    -webkit-backdrop-filter: blur(12px);
+  }
 }

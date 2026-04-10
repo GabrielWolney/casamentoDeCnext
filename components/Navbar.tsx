@@ -9,26 +9,21 @@ import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
-  
-  // Hook do Framer Motion para ler o scroll sem travar a thread
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
+    // Mantendo o seu threshold original de 50
     setIsScrolled(latest > 50);
   });
 
-  // Lista base de links
   const allLinks = [
     { name: "Início", path: "/convite" },
     { name: "Cerimônia", path: "/convite#cerimonia" },
     { name: "Presentes", path: "/presentes" },
   ];
 
-  // Lógica para remover "Cerimônia" se estiver na rota de presentes
   const navLinks = allLinks.filter(link => {
-    if (pathname === "/presentes" && link.name === "Cerimônia") {
-      return false;
-    }
+    if (pathname === "/presentes" && link.name === "Cerimônia") return false;
     return true;
   });
 
@@ -37,15 +32,18 @@ export default function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.8, ease: [0.2, 0.8, 0.2, 1] }}
-      className={`fixed top-0 left-0 w-full z-[2000] transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex justify-center items-center border-b transform-gpu ${
+      // A mágica aqui é o 'transform-gpu' para não dar lag no blur
+      className={`fixed top-0 left-0 w-full z-[2000] transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex justify-center items-center border-b transform-gpu will-change-transform ${
         isScrolled
-          ? "bg-[linear-gradient(135deg,rgba(255,255,255,0.45)_0%,rgba(255,255,255,0.15)_100%)] backdrop-blur-md saturate-[220%] border-white/50 shadow-[0_24px_48px_-12px_rgba(18,120,188,0.12)] pt-[calc(15px+env(safe-area-inset-top))] pb-[15px] px-[5%]"
-          : "bg-transparent border-transparent shadow-none pt-[calc(30px+env(safe-area-inset-top))] pb-[20px] px-[5%]"
+          ? "bg-[linear-gradient(135deg,rgba(255,255,255,0.45)_0%,rgba(255,255,255,0.15)_100%)] backdrop-blur-md saturate-[220%] border-white/50 shadow-[0_24px_48px_-12px_rgba(18,120,188,0.12)] pt-[15px] pb-[15px] px-[5%]"
+          : "bg-transparent border-transparent shadow-none pt-[30px] pb-[20px] px-[5%]"
       }`}
+      // Removido o env() apenas do estilo de transição para evitar o "salto" do navegador
+      style={{ paddingTop: isScrolled ? 'calc(15px + env(safe-area-inset-top))' : 'calc(30px + env(safe-area-inset-top))' }}
     >
       <div
-        className={`flex w-full max-w-7xl transition-all duration-500 items-center justify-between max-md:flex-col ${
-          isScrolled ? "max-md:flex-row max-md:gap-[10px]" : "max-md:gap-[15px]"
+        className={`flex w-full max-w-7xl transition-all duration-500 items-center justify-between ${
+          isScrolled ? "max-md:flex-row max-md:gap-[10px]" : "max-md:flex-col max-md:gap-[15px]"
         }`}
       >
         <div className="flex items-center">
@@ -76,8 +74,8 @@ export default function Navbar() {
                 href={link.path}
                 className={`no-underline font-medium transition-colors duration-300 ${
                   pathname === link.path
-                    ? "text-primary-blue font-semibold"
-                    : "text-deep-blue opacity-80 hover:opacity-100 hover:text-primary-blue"
+                    ? "text-[#1278BC] font-semibold" // Corrigido para sua cor primária
+                    : "text-[#1a2634] opacity-80 hover:opacity-100 hover:text-[#1278BC]"
                 }`}
               >
                 {link.name}

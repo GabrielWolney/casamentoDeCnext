@@ -141,7 +141,12 @@ export default function AdminPage() {
     
     for (const file of files) {
       try {
-        const compressed = await imageCompression(file, { maxSizeMB: 0.7, maxWidthOrHeight: 1200 });
+        
+const compressed = await imageCompression(file, { 
+  maxSizeMB: 0.2, 
+  maxWidthOrHeight: 1080, 
+  fileType: 'image/webp' 
+});
         const cleanName = file.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9.]/g, "");
         const fileName = `foto-${Date.now()}-${cleanName}`;
         
