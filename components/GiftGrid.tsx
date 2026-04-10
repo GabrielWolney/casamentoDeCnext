@@ -11,8 +11,7 @@ interface Gift {
   title: string;
   price: number;
   image_url: string;
-  payment_link_mp: string | null;
-  pix_code: string | null;
+  link: string | null; // Corrigido de payment_link_mp para link (como está no Admin)
   is_custom: boolean;
   created_at: string;
 }
@@ -77,7 +76,6 @@ export default function GiftGrid() {
                 alt={gift.title}
                 fill
                 className="object-cover"
-                // sizes correto: considera padding lateral e colunas reais
                 sizes="(max-width: 768px) calc(100vw - 48px), (max-width: 1280px) calc(50vw - 48px), 400px"
               />
             </div>
@@ -101,17 +99,17 @@ export default function GiftGrid() {
                 </button>
               ) : (
                 <>
-                  {gift.payment_link_mp &&
-                    gift.payment_link_mp !== "null" && (
-                      <a
-                        href={gift.payment_link_mp}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-[linear-gradient(135deg,#1C8BD1_0%,#1278BC_100%)] text-white border-none py-2 px-4 rounded-[14px] font-semibold text-center flex-1 shadow-[0_8px_20px_rgba(91,141,184,0.25)] hover:scale-[0.98] transition-transform"
-                      >
-                        Cartão
-                      </a>
-                    )}
+                  {/* Corrigido para verificar se o "link" existe e não está vazio */}
+                  {gift.link && gift.link.trim() !== "" && (
+                    <a
+                      href={gift.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-[linear-gradient(135deg,#1C8BD1_0%,#1278BC_100%)] text-white border-none py-2 px-4 rounded-[14px] font-semibold text-center flex-1 shadow-[0_8px_20px_rgba(91,141,184,0.25)] hover:scale-[0.98] transition-transform"
+                    >
+                      Cartão
+                    </a>
+                  )}
                   <button
                     onClick={() => openModal(gift)}
                     className="bg-transparent text-[#1a2634] border border-[#1a2634] py-2 px-4 rounded-[14px] font-medium flex-1 hover:bg-black/5 transition-colors"

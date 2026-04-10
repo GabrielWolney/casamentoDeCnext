@@ -48,9 +48,17 @@ export default function PresentesPage() {
           <GiftGrid />
         </div>
 
-        <footer className="w-full text-center py-16 opacity-40 text-sm font-sans tracking-widest text-[#333]">
-          CAMILA & DAVI 2026
-        </footer>
+        <footer className="w-full text-center pb-12 pt-8 mt-10 relative z-10 flex flex-col items-center">
+  {/* Linha divisória suave com gradiente */}
+  <div className="w-24 h-px bg-gradient-to-r from-transparent via-[#1278BC]/30 to-transparent mb-6" />
+  
+  <p className="font-[family-name:var(--font-crimson)] text-2xl text-[#1a2634]/70 italic">
+    Camila & Davi
+  </p>
+  <p className="font-sans text-[0.6rem] tracking-[0.3em] text-[#1278BC] uppercase mt-2 font-bold opacity-80">
+    04 . 07 . 2026
+  </p>
+</footer>
       </main>
     </>
   );

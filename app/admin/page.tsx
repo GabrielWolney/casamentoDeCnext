@@ -355,7 +355,7 @@ const compressed = await imageCompression(file, {
                         {p.is_custom ? "Cota (PIX/Livre)" : `R$ ${p.price}`}
                       </p>
                       {!p.is_custom && p.link && (
-                        <a href={p.link} target="_blank" className="text-[10px] text-gray-400 underline mt-1 block">Ver na loja</a>
+                        <a href={p.link} target="_blank" className="text-[10px] text-gray-400 underline mt-1 block">Ver link</a>
                       )}
                     </div>
                   </div>

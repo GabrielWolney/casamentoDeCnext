@@ -1,70 +1,279 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function CapaConvite() {
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+
+  const handleOpen = () => {
+    setIsOpen(true);
+    // Aguarda a animação (2.2s) para fazer a transição de página
+    setTimeout(() => {
+      router.push("/convite");
+    }, 2200);
+  };
+
   return (
-    <main className="w-full min-h-[100dvh] bg-gradient-to-b from-white from-60% to-[#aecce4] flex flex-col items-center justify-center py-12 px-6 overflow-hidden">
-      
+    <main className="w-full min-h-[100dvh] bg-[#F4F9FD] flex flex-col items-center justify-center py-12 px-6 overflow-hidden">
+
+      {/* ── TÍTULO ── */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: "easeOut" }}
-        className="flex flex-col items-center mb-8"
+        // Voltei para o seu mb-8 original. 
+        // Dica: Se quiser que o nome fique sobreposto ao envelope (como na foto), mude para mb-0 ou mb-[-20px]
+        className="flex flex-col items-center mb-8 z-20 w-full"
       >
-        <p className="font-[family-name:var(--font-crimson)] text-[0.8rem] md:text-sm tracking-[0.1em] text-[#333333]">
+        <p className="font-[family-name:var(--font-crimson)] text-[0.8rem] md:text-sm tracking-[0.1em] text-[#333333] text-center">
           CONVITE DE CASAMENTO
         </p>
-        <h1 className="font-[family-name:var(--font-alex)] text-[3.5rem] md:text-8xl text-[#333333] leading-none mt-1">
+        <h1 className="font-[family-name:var(--font-alex)] text-[3.5rem] md:text-8xl text-[#333333] leading-none mt-1 text-center">
           Camila & Davi
         </h1>
       </motion.div>
 
+      {/* ── ENVELOPE ANIMADO ── */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
-        className="relative w-full max-w-[320px] aspect-[4/3] max-h-[40vh]"
+        className="relative w-full max-w-[350px] drop-shadow-xl z-10"
+        style={{ perspective: "1200px" }}
       >
-        <Image
-  src="/convite.webp"
-  alt="Envelope do Convite"
-  fill
-  priority
-  // ADICIONE ESTA LINHA
-  sizes="(max-width: 768px) 100vw, 320px"
-  className="object-contain drop-shadow-sm"
-/>
+        <div className="relative w-full" style={{ paddingBottom: "62.99%" }}>
+
+          {/* ── CAMADA 1: Fundo + Papel + Bolso (Fica no fundo) ── */}
+          <svg
+            viewBox="0 0 281 177"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="absolute inset-0 w-full h-full overflow-visible z-10"
+          >
+            {/* Interior do envelope */}
+            <path d="M0 0 L281 0 L281 177 L0 177 Z" fill="#E8ECEF" />
+
+            {/* Papel do convite — sobe ao abrir */}
+            <motion.g
+              initial={{ y: 0 }}
+              animate={{ y: isOpen ? -110 : 0 }}
+              transition={{ 
+  duration: 1.1, 
+  delay: isOpen ? 1 : 0, 
+  ease: [0.32, 0.72, 0, 1] 
+}}
+            >
+              <rect x="8" y="10" width="265" height="157" fill="#FFFFFF" rx="2" />
+              <rect x="14" y="16" width="253" height="145" fill="none" stroke="#1278BC" strokeWidth="0.5" strokeOpacity="0.3" />
+              <path d="M100 85 Q 140.5 65 180 85" stroke="#1278BC" strokeOpacity="0.2" strokeWidth="1" fill="none" />
+              <path d="M120 100 L 160 100" stroke="#1278BC" strokeOpacity="0.2" strokeWidth="1" fill="none" />
+            </motion.g>
+
+            {/* Bolso da frente e laterais — cobre o papel */}
+            <g>
+              <path d="M0 0 L140.5 100 L281 0 L281 177 L0 177 Z" fill="#F5F5F5" />
+              <path d="M0 0 L140.5 100 L281 0" fill="none" stroke="rgba(0,0,0,0.04)" strokeWidth="2" />
+              <path d="M0 0 L100 80 L0 177 Z" fill="#FAFAFA" />
+              <path d="M281 0 L181 80 L281 177 Z" fill="#FAFAFA" />
+              <path d="M0 177 L140.5 100 L281 177 Z" fill="#FDFDFD" />
+            </g>
+          </svg>
+
+          {/* ── CAMADA 2: Aba superior + SELO DE CERA (Mágica do Z-Index) ── */}
+          <motion.div
+  id="flap"
+  className="absolute inset-0 w-full h-full"
+  style={{
+    transformOrigin: "top center",
+    transformStyle: "preserve-3d",
+    willChange: "transform",
+  }}
+  initial={{ rotateX: 0, zIndex: 20 }}
+  animate={{
+    rotateX: isOpen ? -160 : 0,
+    zIndex: 20
+  }}
+  transition={{
+    duration: 1,
+    ease: [0.32, 0.72, 0, 1]
+  }}
+  onAnimationComplete={() => {
+    if (isOpen) {
+      const el = document.getElementById("flap");
+      if (el) el.style.zIndex = "0";
+    }
+  }}
+>
+            <svg
+              viewBox="0 0 281 177"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-full h-full"
+              style={{ display: "block" }}
+            >
+              {/* DEFINIÇÕES DE CORES E MÁSCARAS (Trazidas para a Camada 2) */}
+              <defs>
+                <linearGradient id="paint0_linear_22_1537" x1="129.61" y1="132.245" x2="160.146" y2="83.3258" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#0062C3"/>
+                  <stop offset="0.2927" stopColor="#003E7B"/>
+                  <stop offset="1" stopColor="#5F86AD"/>
+                </linearGradient>
+                <linearGradient id="paint1_linear_22_1537" x1="158.756" y1="90.1605" x2="136.435" y2="117.333" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#94B2D1"/>
+                  <stop offset="1" stopColor="#0D2E50"/>
+                </linearGradient>
+                <linearGradient id="paint2_linear_22_1537" x1="131.976" y1="126.274" x2="166.912" y2="74.6459" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#001932"/>
+                  <stop offset="0.2927" stopColor="#003F7E"/>
+                  <stop offset="1" stopColor="#709ECB"/>
+                </linearGradient>
+                <linearGradient id="paint3_linear_22_1537" x1="133.344" y1="124.225" x2="145.249" y2="107.016" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#95CAFF"/>
+                  <stop offset="1" stopColor="#002040"/>
+                </linearGradient>
+                <linearGradient id="paint4_linear_22_1537" x1="134.215" y1="122.964" x2="154.441" y2="93.0748" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#003972"/>
+                  <stop offset="0.2927" stopColor="#0A2F54"/>
+                  <stop offset="1" stopColor="#5F86AD"/>
+                </linearGradient>
+                <linearGradient id="paint5_linear_22_1537" x1="153.668" y1="93.0048" x2="145.138" y2="106.843" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#84B6E7"/>
+                  <stop offset="1" stopColor="#002040"/>
+                </linearGradient>
+                <linearGradient id="paint6_linear_22_1537" x1="135.827" y1="123.928" x2="142.523" y2="111.021" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#5F86AD"/>
+                  <stop offset="1" stopColor="#002243"/>
+                </linearGradient>
+                <linearGradient id="paint7_linear_22_1537" x1="146.483" y1="105.062" x2="135.226" y2="129.711" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#5F86AD"/>
+                  <stop offset="1" stopColor="#003162"/>
+                </linearGradient>
+                <linearGradient id="paint8_linear_22_1537" x1="123.345" y1="94.4945" x2="112.086" y2="119.146" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#5F86AD"/>
+                  <stop offset="1" stopColor="#00284F"/>
+                </linearGradient>
+                <linearGradient id="paint9_linear_22_1537" x1="149.388" y1="85.6039" x2="148.706" y2="88.9792" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#91C1F1"/>
+                  <stop offset="0.177885" stopColor="#75A5D6"/>
+                  <stop offset="1" stopColor="#002244"/>
+                </linearGradient>
+                <linearGradient id="paint10_linear_22_1537" x1="167.565" y1="105.875" x2="164.928" y2="118.921" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#A0C1E2"/>
+                  <stop offset="0.2117" stopColor="#5F86AD"/>
+                  <stop offset="1" stopColor="#133E69"/>
+                </linearGradient>
+                <linearGradient id="paint11_linear_22_1537" x1="143.583" y1="95.9882" x2="145.34" y2="115.389" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="white"/>
+                  <stop offset="1" stopColor="#7EB0E3"/>
+                </linearGradient>
+                <linearGradient id="paint12_linear_22_1537" x1="139.111" y1="99.2631" x2="140.553" y2="115.187" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="white"/>
+                  <stop offset="1" stopColor="#7EB0E3"/>
+                </linearGradient>
+                <linearGradient id="paint13_linear_22_1537" x1="152.277" y1="99.0918" x2="152.792" y2="104.785" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="white"/>
+                  <stop offset="1" stopColor="#7EB0E3"/>
+                </linearGradient>
+                <linearGradient id="paint14_linear_22_1537" x1="143.1" y1="101.23" x2="144.798" y2="119.977" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="white"/>
+                  <stop offset="1" stopColor="#7EB0E3"/>
+                </linearGradient>
+                <linearGradient id="paint15_linear_22_1537" x1="149.142" y1="110.272" x2="149.721" y2="116.667" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="white"/>
+                  <stop offset="1" stopColor="#7EB0E3"/>
+                </linearGradient>
+                {/* AQUI ESTÁ A MÁSCARA QUE FAZ A LOGO APARECER */}
+                <clipPath id="clip0_22_1537">
+                  <rect width="24" height="24" fill="white" transform="translate(130.967 97.1311) rotate(-5.17424)"/>
+                </clipPath>
+              </defs>
+
+              {/* Triângulo da aba */}
+              <path d="M0 0 L140.5 110 L281 0 Z" fill="#F0F0F0" />
+              <path d="M0 0 L140.5 110 L281 0 Z" fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth="1" />
+
+              {/* Selo de cera — some antes da aba abrir */}
+              <motion.g
+                initial={{ scale: 1, opacity: 1 }}
+                animate={{ scale: isOpen ? 0 : 1, opacity: isOpen ? 0 : 1 }}
+                transition={{ duration: 0.25 }}
+                style={{ transformOrigin: "140.5px 95px", transformBox: "view-box" }}
+              >
+                <path d="M168.642 116.279C163.129 120.49 162.853 121.485 159.201 126.796C155.549 132.105 136.185 133.433 131.637 125.733C127.089 118.034 122.61 118.034 121.369 108.078C120.679 102.54 120.823 100.267 121.428 98.556C119.951 101.313 119.101 102.26 120.14 110.601C121.38 120.557 125.86 120.557 130.408 128.257C134.956 135.956 154.319 134.629 157.972 129.318C161.624 124.009 161.9 123.013 167.413 118.802C168.707 117.814 169.627 116.307 170.233 114.537C169.777 115.211 169.256 115.809 168.642 116.279Z" fill="#5F86AD"/>
+                <path d="M122.345 96.6915C125.722 89.0171 125.308 92.5475 131.166 88.6315C137.023 84.7155 143.914 80.8657 152.183 84.2508C160.452 87.636 161.831 92.0167 166.861 96.5962C171.892 101.176 172.925 114.591 167.413 118.802C161.9 123.013 161.624 124.009 157.972 129.319C154.319 134.629 134.956 135.956 130.408 128.257C125.86 120.557 121.38 120.557 120.14 110.601C118.9 100.645 120.347 101.234 122.345 96.6915Z" fill="url(#paint0_linear_22_1537)"/>
+                <path opacity="0.8" d="M130.608 89.5048C136.465 85.5888 143.356 81.7392 151.625 85.1242C159.894 88.5093 161.273 92.89 166.303 97.4696C170.594 101.376 171.961 111.696 168.852 117.263C172.661 111.98 171.39 100.719 166.861 96.5962C161.831 92.0164 160.452 87.6357 152.183 84.2508C143.914 80.8657 137.023 84.7155 131.166 88.6315C126.463 91.7756 125.8 90.1307 123.975 93.3275C125.432 91.3123 126.414 92.3087 130.608 89.5048Z" fill="url(#paint1_linear_22_1537)"/>
+                <path d="M144.328 128.788C155.798 128.788 165.096 119.49 165.096 108.02C165.096 96.5503 155.798 87.2523 144.328 87.2523C132.858 87.2523 123.56 96.5503 123.56 108.02C123.56 119.49 132.858 128.788 144.328 128.788Z" fill="url(#paint2_linear_22_1537)"/>
+                <path opacity="0.5" d="M144.668 127.939C133.198 127.939 123.9 118.641 123.9 107.171C123.9 104.529 124.413 102.011 125.313 99.687C124.193 102.239 123.561 105.054 123.561 108.02C123.561 119.49 132.859 128.788 144.328 128.788C153.156 128.788 160.678 123.27 163.683 115.504C160.472 122.822 153.172 127.939 144.668 127.939Z" fill="url(#paint3_linear_22_1537)"/>
+                <path opacity="0.3" d="M143.565 88.6757C155.035 88.6757 164.333 97.9738 164.333 109.444C164.333 112.71 163.557 115.788 162.214 118.537C164.034 115.45 165.096 111.863 165.096 108.02C165.096 96.5505 155.798 87.2524 144.328 87.2524C136.125 87.2524 129.054 92.0208 125.679 98.9259C129.29 92.7991 135.938 88.6757 143.565 88.6757Z" fill="#1E2832"/>
+                <path opacity="0.3" d="M126.094 98.1459C125.954 98.4046 125.809 98.6608 125.679 98.9259C126.265 97.9327 126.938 96.9985 127.674 96.1195C127.107 96.7604 126.58 97.438 126.094 98.1459Z" fill="#1E2832"/>
+                <path opacity="0.3" d="M144.328 87.2524C137.972 87.2524 132.304 90.1231 128.5 94.6247C132.297 90.3709 137.812 87.6891 143.964 87.6891C155.434 87.6891 164.732 96.9872 164.732 108.457C164.732 111.528 164.045 114.43 162.844 117.049C162.644 117.551 162.45 118.055 162.214 118.537C164.034 115.45 165.096 111.863 165.096 108.02C165.096 96.5505 155.798 87.2524 144.328 87.2524Z" fill="#1E2832"/>
+                <g opacity="0.3">
+                  <path d="M144.018 126.527C134.064 126.527 125.967 118.43 125.967 108.476C125.967 98.5231 134.065 90.426 144.018 90.426C153.971 90.426 162.068 98.5232 162.068 108.476C162.068 118.43 153.971 126.527 144.018 126.527ZM144.018 91.2022C134.493 91.2022 126.744 98.9506 126.744 108.476C126.744 118.002 134.493 125.751 144.018 125.751C153.543 125.751 161.292 118.002 161.292 108.476C161.292 98.9506 153.543 91.2022 144.018 91.2022Z" fill="#170000"/>
+                </g>
+                <path d="M144.328 126.07C134.375 126.07 126.278 117.973 126.278 108.02C126.278 98.0664 134.375 89.9691 144.328 89.9691C154.281 89.9691 162.379 98.0664 162.379 108.02C162.379 117.973 154.281 126.07 144.328 126.07ZM144.328 90.7456C134.803 90.7456 127.054 98.4939 127.054 108.02C127.054 117.545 134.803 125.294 144.328 125.294C153.853 125.294 161.602 117.545 161.602 108.02C161.602 98.4939 153.853 90.7456 144.328 90.7456Z" fill="url(#paint4_linear_22_1537)"/>
+                <path opacity="0.7" d="M144.136 90.2249C154.09 90.2249 162.187 98.3221 162.187 108.275C162.187 112.517 160.707 116.414 158.249 119.498C160.828 116.376 162.379 112.376 162.379 108.02C162.379 98.0664 154.281 89.9691 144.328 89.9691C138.616 89.9691 133.525 92.6433 130.216 96.7968C133.529 92.7857 138.539 90.2249 144.136 90.2249Z" fill="url(#paint5_linear_22_1537)"/>
+                <g opacity="0.7">
+                  <path d="M126.862 108.275C126.862 117.801 134.611 125.549 144.136 125.549C149.607 125.549 154.483 122.986 157.65 119.005C154.479 122.843 149.684 125.294 144.328 125.294C134.803 125.294 127.054 117.545 127.054 108.02C127.054 103.965 128.467 100.241 130.815 97.2904C128.347 100.278 126.862 104.106 126.862 108.275Z" fill="url(#paint6_linear_22_1537)"/>
+                </g>
+                <g opacity="0.3">
+                  <path d="M168.642 116.279C163.129 120.49 162.853 121.485 159.201 126.796C155.549 132.105 136.185 133.433 131.637 125.733C127.089 118.034 122.61 118.034 121.369 108.078C120.679 102.54 120.823 100.267 121.428 98.556C119.951 101.313 119.101 102.26 120.14 110.601C121.38 120.557 125.86 120.557 130.408 128.257C134.956 135.956 154.319 134.629 157.972 129.318C161.624 124.009 161.9 123.013 167.413 118.802C168.707 117.814 169.627 116.307 170.233 114.537C169.777 115.211 169.256 115.809 168.642 116.279Z" fill="#170000"/>
+                  <path d="M123.873 93.5065C123.501 94.1789 123.071 95.0717 122.558 96.2181C122.871 95.6399 123.213 94.9893 123.574 94.1683C123.681 93.9264 123.773 93.7268 123.873 93.5065Z" fill="#170000"/>
+                </g>
+                <g opacity="0.6">
+                  <path d="M167.898 117.735C162.385 121.946 162.109 122.941 158.457 128.251C154.805 133.561 135.441 134.888 130.893 127.189C126.345 119.49 121.866 119.49 120.625 109.534C119.906 103.758 120.094 101.534 120.766 99.7953C119.726 101.816 119.269 103.608 120.14 110.601C121.38 120.557 125.86 120.557 130.408 128.257C134.956 135.956 154.319 134.629 157.972 129.318C161.624 124.009 161.9 123.013 167.413 118.802C168.578 117.912 169.434 116.595 170.039 115.053C169.481 116.128 168.782 117.059 167.898 117.735Z" fill="url(#paint7_linear_22_1537)"/>
+                  <path d="M123.007 95.2323C122.898 95.4657 122.778 95.7306 122.66 95.993C122.717 95.8694 122.773 95.7557 122.83 95.6239C122.893 95.4808 122.946 95.3677 123.007 95.2323Z" fill="url(#paint8_linear_22_1537)"/>
+                </g>
+                <path opacity="0.6" d="M143.718 83.8497C140.669 84.9311 141.535 86.0781 144.957 86.3282C148.378 86.5784 153.01 88.5534 154.518 89.4152C156.026 90.277 158.109 88.6635 153.656 86.3282C149.204 83.9931 146.957 82.7006 143.718 83.8497Z" fill="url(#paint9_linear_22_1537)"/>
+                <path opacity="0.4" d="M166.727 99.3854C162.77 98.7672 166.344 103.207 166.583 107.999C166.822 112.791 164.62 114.453 165.338 116.111C166.056 117.77 169.801 115.615 170.365 110.816C170.929 106.017 168.259 99.6248 166.727 99.3854Z" fill="url(#paint10_linear_22_1537)"/>
+                
+                {/* ── A LOGO C & D ── */}
+                <g clipPath="url(#clip0_22_1537)">
+                  <path d="M136.543 97.3722C136.756 97.4309 137.093 97.5556 137.4 97.8388C137.657 98.0757 137.812 98.3468 137.981 98.7886C138.155 99.2431 138.372 99.9487 138.461 100.887C138.786 100.607 139.2 100.295 139.706 99.9996C140.149 99.7419 140.567 99.5532 140.931 99.4141C141.644 98.0423 142.955 97.1897 144.253 97.2857C145.596 97.3849 146.441 98.4619 146.73 98.8311C147.475 99.7825 147.603 100.774 147.699 101.51C147.903 103.086 147.553 104.412 147.234 105.253C147.638 105.138 148.073 105.26 148.351 105.569C148.619 105.865 148.699 106.288 148.561 106.665C148.612 106.624 148.989 106.328 149.441 106.438C149.935 106.557 150.155 107.073 150.188 107.435C150.217 107.769 150.116 108.313 149.667 108.517C149.283 108.691 148.893 108.505 148.83 108.473C148.939 108.891 148.832 109.323 148.541 109.596C148.295 109.828 148 109.869 147.889 109.878C148.137 110.404 148.467 111.271 148.546 112.39C148.631 113.596 148.385 114.563 148.194 115.13C148.665 114.96 149.2 114.729 149.767 114.41C150.172 114.183 150.528 113.947 150.836 113.721C150.697 112.851 150.597 111.564 150.867 110.048C151.075 108.881 151.439 107.933 151.768 107.244C151.575 107.027 151.311 106.696 151.067 106.254C150.672 105.538 150.548 104.926 150.426 104.346C150.26 103.555 149.975 102.193 149.809 101.537C149.576 100.612 149.286 99.4664 148.572 98.4574C148.335 98.1217 146.918 96.1206 144.408 95.9691C141.634 95.8018 139.887 98.0352 139.743 98.2254C139.701 98.1056 139.418 97.3376 138.598 97.0147C137.918 96.7467 137.128 96.8866 136.543 97.3717L136.543 97.3722Z" fill="url(#paint11_linear_22_1537)"/>
+                  <path d="M146.305 98.7175C146.47 98.9036 146.665 99.1587 146.839 99.4877C146.995 99.7823 147.092 100.055 147.154 100.278C146.79 100.189 142.888 99.311 139.811 102.012C137.364 104.16 137.154 107.068 137.125 107.633C136.926 107.347 136.586 107.228 136.334 107.322C136.005 107.445 135.806 107.938 136.052 108.368C136.028 108.34 135.838 108.13 135.576 108.156C135.275 108.185 135.057 108.509 135.084 108.808C135.105 109.044 135.286 109.33 135.577 109.341C135.806 109.349 136.029 109.184 136.103 108.934C136.073 109.028 135.982 109.355 136.151 109.671C136.206 109.775 136.315 109.979 136.545 110.026C136.731 110.063 136.929 109.984 137.049 109.837C137.198 109.655 137.166 109.442 137.161 109.407C137.152 109.352 137.381 110.273 137.435 110.519C137.583 111.193 137.993 112.114 139.17 113.135C139.223 113.856 139.275 114.577 139.328 115.298C138.937 115.145 138.468 114.918 137.983 114.572C137.003 113.874 136.441 113.037 136.143 112.5C135.509 112.659 134.859 112.449 134.5 111.974C134.124 111.476 134.226 110.897 134.246 110.793C133.939 110.731 133.732 110.615 133.607 110.528C133.314 110.327 133.126 110.054 132.965 109.821C132.777 109.549 132.761 109.456 132.603 109.325C132.412 109.167 132.197 109.108 132.049 109.083C132.177 108.983 132.348 108.839 132.53 108.646C132.649 108.521 132.785 108.376 132.911 108.179C133.131 107.834 133.096 107.674 133.238 107.408C133.343 107.212 133.541 106.963 133.955 106.75C133.741 106.351 133.777 105.867 134.047 105.516C134.344 105.129 134.872 104.974 135.348 105.139C135.82 104.144 136.713 102.622 138.335 101.287C141.538 98.6505 145.242 98.6738 146.306 98.7182L146.305 98.7175Z" fill="url(#paint12_linear_22_1537)"/>
+                  <path d="M149.335 99.3582C149.472 99.6588 149.609 99.9999 149.734 100.38C149.852 100.741 149.939 101.081 150.005 101.39C150.691 101.792 151.222 102.149 151.571 102.393C152.576 103.095 153.078 103.447 153.439 103.755C153.798 104.062 154 104.265 154.392 104.412C154.861 104.587 155.304 104.569 155.602 104.527C154.567 103.366 154.497 102.726 154.647 102.352C154.777 102.027 155.076 101.895 155.262 101.396C155.432 100.941 155.387 100.503 155.325 100.209C155.187 100.366 154.966 100.578 154.648 100.732C154.406 100.848 153.746 101.107 151.85 100.483C151.208 100.272 150.327 99.9283 149.335 99.3582Z" fill="url(#paint13_linear_22_1537)"/>
+                  <path d="M141.175 101.404C140.778 101.64 140.304 101.967 139.817 102.412C139.353 102.837 138.998 103.26 138.734 103.62C139.091 108.322 139.448 113.024 139.804 117.726C139.776 117.94 139.687 118.399 139.341 118.856C138.971 119.343 138.514 119.555 138.313 119.635C138.517 119.827 138.715 119.92 138.875 119.967C139.703 120.208 140.776 119.589 141.566 118.429C142.097 118.924 143.167 119.756 144.658 119.904C147.071 120.145 149.59 118.492 150.868 115.732C150.489 116.028 149.91 116.406 149.134 116.669C148.639 116.837 148.189 116.917 147.824 116.953C147.73 117.172 147.364 117.948 146.468 118.39C146.263 118.492 145.528 118.841 144.644 118.623C143.596 118.365 143.078 117.495 142.898 117.193C141.959 115.617 142.685 113.827 142.794 113.57C142.658 113.487 142.459 113.351 142.247 113.155C141.793 112.733 141.16 111.916 140.913 108.085C140.753 105.619 140.938 104.764 141.212 104.052C141.414 103.527 141.649 103.117 141.826 102.842C141.698 102.704 141.527 102.489 141.39 102.191C141.246 101.878 141.195 101.595 141.176 101.404L141.175 101.404Z" fill="url(#paint14_linear_22_1537)"/>
+                  <path d="M142.639 114.951C142.628 115.219 142.636 115.541 142.691 115.903C142.732 116.169 142.791 116.405 142.853 116.608C143.82 116.87 145.339 117.141 147.155 116.887C147.944 116.777 148.949 116.635 150.08 116.038C151.313 115.387 151.419 114.866 153.118 113.966C153.72 113.647 154.367 113.363 155.208 113.304C155.7 113.27 156.111 113.323 156.392 113.377C156.195 112.961 155.973 112.642 155.772 112.402C155.509 112.087 155.384 112.027 155.334 111.814C155.255 111.475 155.484 111.257 155.739 110.663C155.838 110.431 155.964 110.09 156.054 109.646C155.877 109.664 155.603 109.704 155.288 109.813C154.211 110.184 153.679 110.997 152.939 111.871C152.665 112.195 151.88 113.121 150.939 113.867C149.212 115.236 147.449 115.606 146.793 115.736C145.265 116.039 144.502 115.877 144.297 115.822C143.524 115.618 142.967 115.226 142.639 114.951L142.639 114.951Z" fill="url(#paint15_linear_22_1537)"/>
+                </g>
+
+              </motion.g>
+            </svg>
+          </motion.div>
+
+        </div>
       </motion.div>
 
+      {/* ── BOTÃO DE AÇÃO ── */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.5 }}
-        className="mt-10"
+        className="mt-8 z-20"
       >
-        <Link
-          href="/convite"
+        <button
+          onClick={handleOpen}
+          disabled={isOpen}
           className="
             flex items-center justify-center 
-            bg-white/20 backdrop-blur-[4px]             /* Refraction 80, Frost 4 */
-            border border-white/40                      /* Borda de reflexo sutil */
-            text-[#333333] 
-            py-3 px-16 
+            bg-white/40 backdrop-blur-md
+            border border-white/60
+            text-[#1a2634] 
+            py-4 px-16 
             rounded-full 
             font-[family-name:var(--font-crimson)] 
-            text-2xl 
-            shadow-[0_20px_50px_0_rgba(0,0,0,0.1),inset_1px_1px_3px_rgba(255,255,255,0.8)] /* Depth 20, Disp 50, Light 80% */
+            text-2xl font-semibold
+            shadow-[0_15px_30px_rgba(18,120,188,0.15)]
             transition-all duration-300
-            hover:bg-white/30 hover:shadow-[0_20px_50px_0_rgba(0,0,0,0.15),inset_1px_1px_3px_rgba(255,255,255,1)]
+            hover:bg-white/60 hover:-translate-y-1
             active:scale-95 
-            no-underline
+            disabled:opacity-0 disabled:pointer-events-none
+            cursor-pointer
           "
         >
-          Abrir
-        </Link>
+          {isOpen ? "Abrindo..." : "Abrir"}
+        </button>
       </motion.div>
 
     </main>

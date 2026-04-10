@@ -16,7 +16,6 @@ interface PaymentModalProps {
     title: string;
     price: number | null;
     is_custom: boolean;
-    pix_code?: string | null;
   } | null;
 }
 
@@ -42,13 +41,24 @@ export default function PaymentModal({
     };
   }, [isOpen]);
 
-  // ── Reset de estado ao abrir/fechar ──
+  // ── Reset de estado e GERAÇÃO DO PIX FIXO ao abrir ──
   useEffect(() => {
+    if (!isOpen) return;
+
     const resetTimer = setTimeout(() => {
       setCustomValue("");
       setCopied(false);
-      if (gift && !gift.is_custom && gift.pix_code) {
-        setCurrentPixCode(gift.pix_code);
+      
+      // MÁGICA AQUI: Se for preço fixo, gera o código na hora usando gift.price!
+      if (gift && !gift.is_custom && gift.price) {
+        const pix = new PixPayload(
+          CHAVE_PIX,
+          NOME_NOIVOS,
+          CIDADE_NOIVOS,
+          "PRESENTE", // Pode colocar a descrição que quiser
+          gift.price
+        );
+        setCurrentPixCode(pix.getPayload());
       } else {
         setCurrentPixCode("");
       }
@@ -123,7 +133,7 @@ export default function PaymentModal({
           className="absolute top-5 right-5 bg-transparent border-none text-3xl cursor-pointer text-[#1a2634] hover:opacity-60 transition-opacity"
           onClick={onClose}
         >
-          &times;
+          ×
         </button>
 
         <h2 className="font-[family-name:var(--font-crimson)] text-2xl text-[#1a2634] mb-2">
