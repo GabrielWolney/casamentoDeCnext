@@ -33,41 +33,38 @@ export default function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.8, ease: [0.2, 0.8, 0.2, 1] }}
-      className={`fixed top-0 left-0 w-full z-[2000] transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex justify-center items-center border-b ${
+      // 1. SOLUÇÃO CHROME: Removi o transform-gpu e translateZ(0). 
+      // Agora o Chrome respeita o position: fixed quando a barra de endereços some.
+      className={`fixed top-0 left-0 w-full z-[2000] transition-all duration-500 border-b ${
         isScrolled
-          ? "bg-white/40 border-white/50 shadow-[0_8px_32px_-8px_rgba(18,120,188,0.15)] px-[5%]"
-          : "bg-transparent border-transparent shadow-none px-[5%]"
+          ? "bg-[linear-gradient(135deg,rgba(255,255,255,0.45)_0%,rgba(255,255,255,0.15)_100%)] backdrop-blur-md saturate-[220%] border-white/50 shadow-[0_8px_32px_-8px_rgba(18,120,188,0.15)]"
+          : "bg-transparent border-transparent shadow-none"
       }`}
       style={{
-        paddingTop: isScrolled
-          ? "max(15px, calc(15px + env(safe-area-inset-top, 0px)))"
-          : "max(20px, calc(20px + env(safe-area-inset-top, 0px)))",
-        paddingBottom: isScrolled ? "15px" : "20px",
-        backdropFilter: isScrolled ? "blur(16px) saturate(200%)" : "none",
-        WebkitBackdropFilter: isScrolled ? "blur(16px) saturate(200%)" : "none",
-        transform: "translateZ(0)",
+        // 2. SOLUÇÃO SAFARI NOTCH: A Nav sempre começa no topo absoluto da tela.
+        // O padding-top joga o conteúdo para baixo do Notch, mas o fundo de vidro preenche o topo.
+        paddingTop: "env(safe-area-inset-top, 0px)",
       }}
     >
+      {/* 3. CONTEÚDO SEPARADO: Quem lida com o "engolir" ou "expandir" é essa div interna */}
       <div
-        className={`flex w-full max-w-7xl transition-all duration-500 items-center justify-between max-md:flex-col ${
-          isScrolled ? "max-md:flex-row max-md:gap-[10px]" : "max-md:gap-[15px]"
+        className={`flex w-full max-w-7xl mx-auto transition-all duration-500 items-center justify-between px-[5%] ${
+          isScrolled ? "py-3 max-md:flex-row max-md:gap-[10px]" : "py-5 md:py-8 max-md:flex-col max-md:gap-[15px]"
         }`}
       >
         <div className="flex items-center">
-          <Link href="/convite">
+          <Link href="/convite" prefetch={false}>
             <Image
-  src="/logo_casamento-aquarela.webp"
-  alt="Davi & Camila"
-  width={120}
-  height={50}
-  priority
-  // O SEGREDO ESTÁ AQUI:
-  style={{ width: 'auto' }} 
-  // Repare que eu tirei o "w-auto" do className abaixo para evitar conflito
-  className={`transition-all duration-500 object-contain ${
-    isScrolled ? "h-[32px]" : "h-[45px] md:h-[50px]"
-  }`}
-/>
+              src="/logo_casamento-aquarela.webp"
+              alt="Davi & Camila"
+              width={120}
+              height={50}
+              priority
+              style={{ width: 'auto' }} 
+              className={`transition-all duration-500 object-contain ${
+                isScrolled ? "h-[32px]" : "h-[45px] md:h-[50px]"
+              }`}
+            />
           </Link>
         </div>
 
@@ -82,6 +79,7 @@ export default function Navbar() {
             <li key={link.name}>
               <Link
                 href={link.path}
+                prefetch={false}
                 className={`no-underline font-medium transition-colors duration-300 ${
                   pathname === link.path
                     ? "text-[#1278BC] font-semibold"

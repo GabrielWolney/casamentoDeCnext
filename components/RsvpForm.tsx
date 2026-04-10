@@ -17,6 +17,7 @@ export default function RsvpForm() {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const nameInputRef = useRef<HTMLDivElement>(null);
 
   // Carrega a lista do Google Sheets ao montar
   useEffect(() => {
@@ -32,18 +33,22 @@ export default function RsvpForm() {
     loadGuests();
   }, []);
 
-  // Fecha o dropdown se clicar fora
+  // Fecha o dropdown se clicar fora (agora usando a ref correta do container)
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+    const close = (e: MouseEvent | TouchEvent) => {
+      if (nameInputRef.current && !nameInputRef.current.contains(e.target as Node)) {
         setShowDropdown(false);
       }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    };
+    document.addEventListener("mousedown", close);
+    document.addEventListener("touchstart", close, { passive: true });
+    return () => {
+      document.removeEventListener("mousedown", close);
+      document.removeEventListener("touchstart", close);
+    };
   }, []);
 
-  // Lógica do Autocomplete (Debounced Sênior)
+  // Lógica do Autocomplete (Debounced)
   useEffect(() => {
     const val = normalizeText(guestName);
     
@@ -93,7 +98,6 @@ export default function RsvpForm() {
         alert(`Presença confirmada! Obrigado, ${dbName}.`);
         setGuestName("");
         setStatusMessage("Confirmado!");
-        // Remove da lista local para não confirmar de novo sem recarregar a página
         setGuestDatabase(prev => prev.filter(g => g !== dbName));
       } else {
         throw new Error(data.message || "Erro no servidor");
@@ -117,7 +121,9 @@ export default function RsvpForm() {
       </h2>
       
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="relative w-full" ref={containerRef}>
+        
+        {/* Usando o nameInputRef corretamente aqui para o clique fora funcionar */}
+        <div ref={nameInputRef} className="relative w-full">
           <label htmlFor="guestName" className="block font-body text-xs font-semibold uppercase tracking-[1px] text-primary-blue mb-2 ml-1">
             Nome
           </label>
@@ -128,20 +134,27 @@ export default function RsvpForm() {
             value={guestName}
             onChange={(e) => setGuestName(e.target.value)}
             onFocus={() => { if (matches.length > 0) setShowDropdown(true); }}
-            placeholder="Digite seu nome para buscar..."
-            autoComplete="off"
+            placeholder="Busque seu nome..."
+            /* Impede o navegador de tentar jogar o autocompletar feio do sistema por cima */
+            autoComplete="new-password" 
             required
-            className="w-full p-3 px-5 rounded-xl bg-white/40 border border-white/60 backdrop-blur-md font-body text-base text-deep-blue outline-none transition-all duration-400 focus:bg-white/80 focus:border-primary-blue focus:shadow-[0_0_15px_rgba(18,120,188,0.15)] focus:-translate-y-[1px]"
+            /* text-[16px] É A REGRA DE OURO PARA O IPHONE NÃO DAR ZOOM */
+            className="w-full p-3.5 px-5 rounded-xl bg-white/50 border border-white/60 backdrop-blur-md font-body text-[16px] text-deep-blue outline-none transition-all duration-400 focus:bg-white/80 focus:border-[#7BC0E3] focus:shadow-[0_0_15px_rgba(123,192,227,0.25)] focus:-translate-y-[1px]"
           />
 
-          {/* Autocomplete Dropdown */}
+          {/* Autocomplete Dropdown - Redesenhado */}
           {showDropdown && (
-            <ul className="absolute top-full left-0 right-0 z-[99] bg-white/90 backdrop-blur-xl border border-white/50 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] max-h-[200px] overflow-y-auto mt-2 py-1 list-none scrollbar-thin scrollbar-thumb-primary-blue/30 scrollbar-track-black/5">
+            <ul 
+              className="absolute top-[105%] left-0 right-0 z-[9999] bg-white/95 backdrop-blur-xl rounded-xl shadow-[0_15px_35px_rgba(0,0,0,0.15)] max-h-[220px] overflow-y-auto py-2 list-none m-0"
+              style={{ border: "1px solid rgba(255,255,255,0.6)" }}
+            >
               {matches.map((name, idx) => (
                 <li
                   key={idx}
                   onClick={() => handleSelectGuest(name)}
-                  className="p-3 px-5 cursor-pointer border-b border-black/5 text-[0.95rem] text-deep-blue transition-colors duration-200 hover:bg-primary-blue/10 hover:text-primary-blue last:border-none"
+                  className="px-5 py-3 cursor-pointer text-[16px] text-gray-700 transition-colors duration-200 hover:bg-[#F4F9FD] hover:text-[#1278BC] font-medium"
+                  /* O style inline esmaga qualquer linha preta global que tenha ficado presa no cache */
+                  style={{ border: "none", borderBottom: "none", outline: "none" }}
                 >
                   {name}
                 </li>
@@ -150,10 +163,11 @@ export default function RsvpForm() {
           )}
         </div>
 
+        {/* Esse div vazio estava gerando uma margem desnecessária, vamos garantir que o botão fique bem posicionado */}
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full p-3.5 mt-2 rounded-[50px] border-none bg-[linear-gradient(135deg,#1C8BD1_0%,#1278BC_100%)] text-white font-body font-semibold text-base tracking-[1px] uppercase cursor-pointer transition-all duration-400 shadow-[0_10px_20px_-5px_rgba(18,120,188,0.4)] hover:-translate-y-[2px] hover:shadow-[0_15px_30px_-5px_rgba(18,120,188,0.5)] hover:bg-[linear-gradient(135deg,#2F9BDC_0%,#1C8BD1_100%)] disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full p-4 mt-4 rounded-full border-none bg-[#6B93B8] text-white font-body font-bold text-base tracking-[1px] uppercase cursor-pointer transition-all duration-400 shadow-[0_10px_20px_-5px_rgba(107,147,184,0.4)] hover:-translate-y-[2px] hover:shadow-[0_15px_30px_-5px_rgba(107,147,184,0.5)] hover:bg-[#5a81a3] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? statusMessage : statusMessage || "Confirmar Presença"}
         </button>

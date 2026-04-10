@@ -59,6 +59,11 @@
     --radius-card: 28px;
     --radius-btn: 14px;
     --primary-gradient: linear-gradient(135deg,#1C8BD1 0%,#1278BC 100%);
+    input[type="text"],
+    input[type="email"],
+    input[type="number"] {
+    font-size: 16px !important;
+  }
   }
 }
 
