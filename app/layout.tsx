@@ -1,7 +1,7 @@
-// app/layout.tsx
 import type { Metadata, Viewport } from "next";
 import { Crimson_Text, Alex_Brush } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar"; // Importe ela aqui
 
 const crimson = Crimson_Text({
   subsets: ["latin"],
@@ -26,7 +26,6 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  // 1. RESOLVE O AVISO DE METADATA (Substitua pela sua URL da Vercel)
   metadataBase: new URL('https://casamento-dc.vercel.app'), 
   title: "Camila & Davi — Casamento",
   description: "Convite de casamento — 04 de Julho de 2026",
@@ -34,14 +33,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // 2. RESOLVE O AVISO DE SCROLL BEHAVIOR E HIDRATAÇÃO
     <html 
       lang="pt-BR" 
       className={`${crimson.variable} ${alexBrush.variable}`} 
       data-scroll-behavior="smooth" 
       suppressHydrationWarning
     >
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {/* A Navbar fica aqui, no topo de tudo, fora do fluxo das páginas */}
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }
