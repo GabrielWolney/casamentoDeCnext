@@ -31,31 +31,33 @@ export default function Navbar() {
   return (
     <motion.nav
       initial={false}
-      // Alteramos para inset-x-0 e mx-auto para centralizar sem precisar de translate-x (que causa bugs no Chrome)
+      // COPIANDO A LÓGICA DO PROJETO AGAPE:
+      // Usamos inset-x-0 + mx-auto em vez de left-50%
       animate={{
         width: isScrolled ? "92%" : "100%",
         top: isScrolled ? 16 : 0,
-        borderRadius: isScrolled ? 999 : 0,
+        borderRadius: isScrolled ? 24 : 0,
       }}
-      transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}
-      className={`fixed inset-x-0 mx-auto z-[9999] flex justify-center items-center transition-all duration-500 ${
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      className={`fixed inset-x-0 mx-auto z-[9999] flex justify-center items-center transition-colors duration-500 ${
         isScrolled
-          ? "bg-white/75 backdrop-blur-md saturate-[180%] border border-white/50 shadow-[0_12px_40px_-12px_rgba(18,120,188,0.2)]"
-          : "bg-transparent border-transparent shadow-none"
+          ? "bg-white/80 backdrop-blur-lg border border-white/40 shadow-lg"
+          : "bg-transparent border-transparent"
       }`}
       style={{
-        paddingTop: isScrolled ? "12px" : "calc(30px + env(safe-area-inset-top, 0px))",
-        paddingBottom: isScrolled ? "12px" : "20px",
-        paddingLeft: isScrolled ? "24px" : "5%",
-        paddingRight: isScrolled ? "24px" : "5%",
-        // FORÇA O CHROME A MANTER A NAVBAR FIXA E FLUIDA
-        willChange: "transform, top, width",
-        transform: "translateZ(0)", 
+        maxWidth: "1200px", // Limite para telas grandes
+        paddingTop: isScrolled ? "10px" : "calc(25px + env(safe-area-inset-top, 0px))",
+        paddingBottom: isScrolled ? "10px" : "15px",
+        paddingLeft: "20px",
+        paddingRight: "20px",
+        // TRUQUE PARA O CHROME: Força a renderização em uma camada isolada (hardware acceleration)
+        transform: "translateZ(0)",
+        backfaceVisibility: "hidden",
       }}
     >
       <div
-        className={`flex w-full max-w-7xl transition-all duration-500 items-center justify-between ${
-          isScrolled ? "max-md:flex-row max-md:gap-[10px]" : "max-md:flex-col max-md:gap-[15px]"
+        className={`flex w-full items-center justify-between transition-all duration-500 ${
+          isScrolled ? "max-md:flex-row" : "max-md:flex-col gap-4"
         }`}
       >
         <div className="flex items-center">
@@ -63,33 +65,30 @@ export default function Navbar() {
             <Image
               src="/logo_casamento-aquarela.webp"
               alt="Davi & Camila"
-              width={120}
-              height={50}
+              width={110}
+              height={45}
               priority
               style={{ width: 'auto' }} 
               className={`transition-all duration-500 object-contain ${
-                isScrolled ? "h-[30px] md:h-[35px]" : "h-[45px] md:h-[50px]"
+                isScrolled ? "h-[28px] md:h-[32px]" : "h-[40px] md:h-[45px]"
               }`}
             />
           </Link>
         </div>
 
         <ul
-          className={`flex list-none transition-all duration-500 m-0 p-0 ${
-            isScrolled
-              ? "gap-[15px] text-[0.85rem] md:gap-[30px] md:text-base"
-              : "gap-[20px] text-[0.95rem] md:gap-[40px] md:text-base"
+          className={`flex list-none m-0 p-0 transition-all duration-500 ${
+            isScrolled ? "gap-4 md:gap-8" : "gap-6 md:gap-10"
           }`}
         >
           {navLinks.map((link) => (
             <li key={link.name}>
               <Link
                 href={link.path}
-                prefetch={false}
-                className={`no-underline font-medium transition-colors duration-300 ${
+                className={`text-[0.9rem] md:text-base font-semibold no-underline transition-colors duration-300 ${
                   pathname === link.path
-                    ? "text-[#1278BC] font-semibold"
-                    : "text-[#1a2634] opacity-80 hover:opacity-100 hover:text-[#1278BC]"
+                    ? "text-[#1278BC]"
+                    : "text-[#1a2634]/70 hover:text-[#1278BC]"
                 }`}
               >
                 {link.name}
