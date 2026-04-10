@@ -219,7 +219,16 @@ export default function ConviteHome() {
                     </div>
 
                     <div className="flex flex-col items-center">
-                      <div className="relative w-48 h-28 mb-4"><Image src="/aquarela-igreja.webp" alt="Igreja" fill className="object-contain" /></div>
+                      <div className="relative w-48 h-28 mb-4">
+  <Image 
+    src="/aquarela-igreja.webp" 
+    alt="Igreja" 
+    fill 
+    className="object-contain" 
+    // Isso avisa ao navegador que a imagem nunca será maior que 200px
+    sizes="200px" 
+  />
+</div>
                       <p className="text-[0.6rem] tracking-widest text-[#7BC0E3] font-bold uppercase">No Santuário</p>
                       <p className="font-(family-name:--font-crimson) text-xl text-gray-700 leading-tight mb-6 text-center">Imaculado Coração de Maria</p>
                       <div className="flex gap-6">
@@ -229,7 +238,16 @@ export default function ConviteHome() {
                     </div>
 
                     <div className="flex flex-col items-center border-t border-gray-50 pt-10">
-                      <div className="relative w-48 h-28 mb-4"><Image src="/oasis-aquarela.webp" alt="Oasis" fill className="object-contain" /></div>
+                      <div className="relative w-48 h-28 mb-4">
+  <Image 
+    src="/oasis-aquarela.webp" 
+    alt="Oasis" 
+    fill 
+    className="object-contain" 
+    // Mantendo a consistência do tamanho
+    sizes="200px" 
+  />
+</div>
                       <p className="text-[0.6rem] tracking-widest text-[#7BC0E3] font-bold uppercase">Recepção após a cerimônia</p>
                       <p className="font-(family-name:--font-crimson) text-xl text-gray-700 mb-6 text-center">Recanto Oasis</p>
                       <div className="flex gap-6">
