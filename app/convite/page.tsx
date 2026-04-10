@@ -22,12 +22,12 @@ const normalizeText = (text: string) =>
 
 const LOCATIONS = {
   igreja: {
-    maps: "https://maps.app.goo.gl/igreja_exemplo",
-    waze: "https://waze.com/ul?q=Santuario+Imaculado+Coracao+de+Maria",
+    maps: "https://maps.app.goo.gl/tQVxrVQzfXNncgEq7",
+    waze: "https://ul.waze.com/ul?ll=-15.82619562%2C-48.00807595&navigate=yes&zoom=17&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location",
   },
   recepcao: {
-    maps: "https://maps.app.goo.gl/recepcao_exemplo",
-    waze: "https://waze.com/ul?q=Recanto+Oasis",
+    maps: "https://maps.app.goo.gl/HPc8DfiSkLbvVzycA",
+    waze: "https://ul.waze.com/ul?ll=-15.79667214%2C-48.03066015&navigate=yes&zoom=17&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location",
   },
 };
 
