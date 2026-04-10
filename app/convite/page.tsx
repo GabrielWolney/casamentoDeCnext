@@ -207,7 +207,16 @@ export default function ConviteHome() {
         />
       </div>
 
-      <main className="w-full min-h-screen pb-24 overflow-x-hidden relative z-10 bg-transparent">
+      <main
+  className="w-full min-h-screen pb-24 overflow-x-hidden relative z-10 bg-transparent"
+  style={{
+    // Creates a new stacking context that CONTAINS all child
+    // compositor layers — they can no longer fight the Navbar
+    isolation: "isolate",
+    // Prevents Chrome from promoting this layer above the portal
+    contain: "layout style",
+  }}
+>
         <Navbar />
 
         <div className="pt-36 md:pt-44 flex flex-col items-center">
@@ -307,10 +316,11 @@ export default function ConviteHome() {
           </section>
 
           {/* 4. ENVELOPE */}
-          <section
-            id="cerimonia"
-            className="w-full max-w-130 px-4 mb-16 flex flex-col items-center relative scroll-mt-32"
-          >
+<section
+  id="cerimonia"
+  className="w-full max-w-130 px-4 mb-16 flex flex-col items-center relative scroll-mt-32"
+  style={{ isolation: "isolate" }}
+>
             <motion.div
               layout
               onClick={() => setEnvelopeOpen(!envelopeOpen)}

@@ -96,10 +96,13 @@ export default function PhotoCarousel() {
     <div className="relative w-full max-w-[100vw] overflow-hidden group">
       
       {/* Container Pai: Altura exata para abraçar a foto sem folgas */}
-      <div 
-        className="relative w-full h-[360px] md:h-[400px] flex items-center justify-center"
-        style={{ perspective: "1000px" }}
-      >
+      <div
+  className="relative w-full h-[360px] md:h-[400px] flex items-center justify-center"
+  style={{
+    perspective: "1000px",
+    isolation: "isolate", // contains rotateY layers
+  }}
+>
         <style dangerouslySetInnerHTML={{__html: `
           @keyframes shimmer { 100% { transform: translateX(100%); } }
         `}} />

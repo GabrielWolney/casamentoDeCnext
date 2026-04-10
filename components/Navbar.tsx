@@ -11,21 +11,19 @@ export default function Navbar() {
   const pathname = usePathname();
   const { scrollY } = useScroll();
 
-  // 1. Hooks no topo (Obrigatório no React)
   const handleScroll = useCallback((latest: number) => {
     setIsScrolled(latest > 50);
   }, []);
 
   useMotionValueEvent(scrollY, "change", handleScroll);
 
-  // 2. Bloqueio para a Capa (Depois dos Hooks)
   if (pathname === "/") return null;
 
   const navLinks = [
     { name: "Início", path: "/convite" },
     { name: "Cerimônia", path: "/convite#cerimonia" },
     { name: "Presentes", path: "/presentes" },
-  ].filter(link => {
+  ].filter((link) => {
     if (pathname === "/presentes" && link.name === "Cerimônia") return false;
     return true;
   });
@@ -39,7 +37,6 @@ export default function Navbar() {
         borderRadius: isScrolled ? 30 : 0,
       }}
       transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}
-      // RESTAURADO: Vidro perfeito com blur alto e saturação
       className={`fixed inset-x-0 mx-auto z-[99999] flex justify-center items-center transition-all duration-500 ${
         isScrolled
           ? "bg-white/45 backdrop-blur-xl saturate-[180%] border border-white/50 shadow-[0_12px_40px_-12px_rgba(18,120,188,0.2)]"
@@ -48,22 +45,38 @@ export default function Navbar() {
       style={{
         maxWidth: "1100px",
         padding: isScrolled ? "10px 24px" : "25px 5%",
-        // Garantia contra o "esconde-esconde" do Chrome
+        /*
+          These three lines are the Chrome compositor fix on the Navbar itself.
+
+          translateZ(0)      — promotes the nav to its own GPU layer immediately,
+                               so Chrome never batches it with page content layers.
+          backfaceVisibility — suppresses a Chrome-specific flicker that occurs
+                               when the layer is first promoted during scroll.
+          willChange         — tells Chrome to keep this layer resident on the GPU
+                               so it is never re-promoted mid-scroll (the moment
+                               re-promotion happens is when it disappears).
+        */
         transform: "translateZ(0)",
         backfaceVisibility: "hidden",
-        perspective: "1000px"
+        willChange: "transform",
       }}
     >
-      <div className={`flex w-full items-center justify-between transition-all duration-500 ${isScrolled ? "" : "max-md:flex-col gap-4"}`}>
-        <Link href="/convite" className="shrink-0">
+      <div
+        className={`flex w-full items-center justify-between transition-all duration-500 ${
+          isScrolled ? "" : "max-md:flex-col gap-4"
+        }`}
+      >
+        <Link href="/" className="shrink-0">
           <Image
             src="/logo_casamento-aquarela.webp"
             alt="Logo"
             width={110}
             height={45}
             priority
-            style={{ width: 'auto' }}
-            className={`transition-all duration-500 object-contain ${isScrolled ? "h-[30px] md:h-[35px]" : "h-[45px] md:h-[50px]"}`}
+            style={{ width: "auto" }}
+            className={`transition-all duration-500 object-contain ${
+              isScrolled ? "h-[30px] md:h-[35px]" : "h-[45px] md:h-[50px]"
+            }`}
           />
         </Link>
 
@@ -73,8 +86,8 @@ export default function Navbar() {
               <Link
                 href={link.path}
                 className={`text-[0.9rem] md:text-base font-bold no-underline transition-colors duration-300 ${
-                  pathname === link.path 
-                    ? "text-[#1278BC]" 
+                  pathname === link.path
+                    ? "text-[#1278BC]"
                     : "text-[#1a2634] opacity-70 hover:opacity-100 hover:text-[#1278BC]"
                 }`}
               >
