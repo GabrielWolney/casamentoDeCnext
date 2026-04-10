@@ -244,7 +244,6 @@ export default function ConviteHome() {
             style={{
               overflowX: "auto",
               WebkitOverflowScrolling: "touch",
-              touchAction: "pan-x",
               paddingLeft: "1.5rem",
               paddingRight: "1.5rem",
               isolation: "isolate",
