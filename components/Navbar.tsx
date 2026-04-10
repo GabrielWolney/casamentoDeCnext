@@ -49,7 +49,7 @@ export default function Navbar() {
         <div className="flex items-center">
           <Link href="/convite">
             <Image
-              src="/logo_casamento-aquarela.PNG"
+              src="/logo_casamento-aquarela.webp"
               alt="Davi & Camila"
               width={120}
               height={50}

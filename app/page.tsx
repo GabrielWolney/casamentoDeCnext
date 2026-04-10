@@ -29,7 +29,7 @@ export default function CapaConvite() {
         className="relative w-full max-w-[320px] aspect-[4/3] max-h-[40vh]"
       >
         <Image
-          src="/convite.png"
+          src="/convite.webp"
           alt="Envelope do Convite"
           fill
           priority
