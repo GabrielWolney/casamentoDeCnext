@@ -31,32 +31,30 @@ export default function Navbar() {
   return (
     <motion.nav
       initial={false}
-      // A MÁGICA DA PÍLULA: Controla a forma de fora sem quebrar o que tem dentro
+      // Alteramos para inset-x-0 e mx-auto para centralizar sem precisar de translate-x (que causa bugs no Chrome)
       animate={{
         width: isScrolled ? "92%" : "100%",
         top: isScrolled ? 16 : 0,
-        borderRadius: isScrolled ? 999 : 0
+        borderRadius: isScrolled ? 999 : 0,
       }}
       transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}
-      className={`fixed left-1/2 -translate-x-1/2 z-[2000] flex justify-center items-center transition-all duration-500 ${
+      className={`fixed inset-x-0 mx-auto z-[9999] flex justify-center items-center transition-all duration-500 ${
         isScrolled
-          // ESTADO ROLADO: Vidro, sombra, borda
           ? "bg-white/75 backdrop-blur-md saturate-[180%] border border-white/50 shadow-[0_12px_40px_-12px_rgba(18,120,188,0.2)]"
-          // ESTADO INICIAL: Invisível
           : "bg-transparent border-transparent shadow-none"
       }`}
       style={{
-        // TRANSIÇÃO DE ESPAÇAMENTO (Mantém a sua matemática original no início)
         paddingTop: isScrolled ? "12px" : "calc(30px + env(safe-area-inset-top, 0px))",
         paddingBottom: isScrolled ? "12px" : "20px",
         paddingLeft: isScrolled ? "24px" : "5%",
         paddingRight: isScrolled ? "24px" : "5%",
+        // FORÇA O CHROME A MANTER A NAVBAR FIXA E FLUIDA
+        willChange: "transform, top, width",
+        transform: "translateZ(0)", 
       }}
     >
-      {/* O SEU MIOLO ORIGINAL INTACTO */}
       <div
-        className={`flex w-full max-w-7xl mx-auto transition-all duration-500 items-center justify-between ${
-          // É AQUI QUE ACONTECE A SUA TRANSIÇÃO DE COLUNA PARA LINHA
+        className={`flex w-full max-w-7xl transition-all duration-500 items-center justify-between ${
           isScrolled ? "max-md:flex-row max-md:gap-[10px]" : "max-md:flex-col max-md:gap-[15px]"
         }`}
       >
@@ -79,8 +77,8 @@ export default function Navbar() {
         <ul
           className={`flex list-none transition-all duration-500 m-0 p-0 ${
             isScrolled
-              ? "gap-[15px] text-[0.85rem] md:gap-[30px] md:text-base" // Mais apertadinho na pílula
-              : "gap-[20px] text-[0.95rem] md:gap-[40px] md:text-base" // Mais espaçado no início
+              ? "gap-[15px] text-[0.85rem] md:gap-[30px] md:text-base"
+              : "gap-[20px] text-[0.95rem] md:gap-[40px] md:text-base"
           }`}
         >
           {navLinks.map((link) => (
