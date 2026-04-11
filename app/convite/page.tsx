@@ -8,8 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { SiGooglemaps, SiWaze } from "react-icons/si";
 import PhotoCarousel from "@/components/PhotoCarousel";
 
-const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbx_Q9y4vJfa-viSjW1GBXsySLS8NpS6XbbN33nXGxwNECeMC_fG5-hZDLml8xw0XKo0dg/exec";
+const SCRIPT_URL = process.env.NEXT_PUBLIC_RSVP_SCRIPT_URL!;
 
 const normalizeText = (text: string) =>
   String(text || "")
