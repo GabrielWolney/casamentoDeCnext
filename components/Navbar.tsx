@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -13,6 +12,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const { scrollY } = useScroll();
 
+  // O truque do setTimeout de volta para deixar o ESLint feliz!
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0);
     return () => clearTimeout(timer);
@@ -35,7 +35,7 @@ export default function Navbar() {
     return true;
   });
 
-  const navContent = (
+  return (
     <nav
       className={[
         "fixed inset-x-0 mx-auto z-[99999]",
@@ -47,9 +47,6 @@ export default function Navbar() {
       ].join(" ")}
       style={{
         padding: isScrolled ? "10px 24px" : "25px 5%",
-        /* Estes são os segredos para o Safari e Chrome Mobile: */
-        WebkitBackfaceVisibility: "hidden",
-        WebkitTransform: "translateZ(0)",
       }}
     >
       <div
@@ -57,7 +54,7 @@ export default function Navbar() {
           isScrolled ? "" : "max-md:flex-col gap-4"
         }`}
       >
-        <Link href="/convite" className="shrink-0">
+        <Link href="/" className="shrink-0">
           <Image
             src="/logo_casamento-aquarela.webp"
             alt="Logo Camila e Davi"
@@ -90,6 +87,4 @@ export default function Navbar() {
       </div>
     </nav>
   );
-
-  return createPortal(navContent, document.body);
 }

@@ -16,14 +16,13 @@
     color: var(--color-deep-blue);
     font-family: var(--font-body);
     line-height: 1.7;
-    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
     min-height: 100dvh;
-    /* overscroll e overflow-scrolling no mesmo bloco */
     overscroll-behavior-y: none;
-    -webkit-overflow-scrolling: touch;
+    /* APAGAMOS O overflow-x: hidden DAQUI */
+    /* APAGAMOS O -webkit-overflow-scrolling DAQUI */
   }
 
  body::before {
