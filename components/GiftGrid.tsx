@@ -89,22 +89,20 @@ function GiftCard({ gift, openModal }: { gift: Gift; openModal: (g: Gift) => voi
 
       {/* Botões */}
       <div className="mt-auto pt-4 flex gap-2">
-        {gift.is_custom ? (
-          <button onClick={() => openModal(gift)} className="bg-transparent text-[#1a2634] border border-[#1a2634] py-2 px-4 rounded-[14px] font-medium w-full hover:bg-[#1a2634] hover:text-white transition-colors">
-            Definir Valor
-          </button>
-        ) : (
-          <>
-            {gift.link && (
-              <a href={gift.link} target="_blank" rel="noopener noreferrer" className="bg-[#1278BC] text-white py-2 px-4 rounded-[14px] font-semibold text-center flex-1 shadow-md hover:scale-[0.98] transition-transform">
-                Cartão
-              </a>
-            )}
-            <button onClick={() => openModal(gift)} className="bg-transparent text-[#1a2634] border border-[#1a2634] py-2 px-4 rounded-[14px] font-medium flex-1 hover:bg-[#1a2634] hover:text-white transition-colors">
-              Pix
-            </button>
-          </>
+        {/* Se o link existir, o botão "Cartão" aparece (seja livre ou fixo) */}
+        {gift.link && (
+          <a href={gift.link} target="_blank" rel="noopener noreferrer" className="bg-[#1278BC] text-white py-2 px-4 rounded-[14px] font-semibold text-center flex-1 shadow-md hover:scale-[0.98] transition-transform flex items-center justify-center">
+            Cartão
+          </a>
         )}
+        
+        {/* O botão do PIX se adapta: se tiver Cartão ele divide o espaço (flex-1), se não tiver, ele ocupa tudo (w-full) */}
+        <button 
+          onClick={() => openModal(gift)} 
+          className={`bg-transparent text-[#1a2634] border border-[#1a2634] py-2 px-4 rounded-[14px] font-medium transition-colors hover:bg-[#1a2634] hover:text-white ${gift.link ? 'flex-1' : 'w-full'}`}
+        >
+          {gift.is_custom ? "Pix (Valor Livre)" : "Pix"}
+        </button>
       </div>
     </div>
   );
