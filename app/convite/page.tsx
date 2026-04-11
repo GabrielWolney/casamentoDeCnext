@@ -8,7 +8,6 @@ import { supabase } from "@/lib/supabase";
 import { SiGooglemaps, SiWaze } from "react-icons/si";
 import PhotoCarousel from "@/components/PhotoCarousel";
 
-
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbx_Q9y4vJfa-viSjW1GBXsySLS8NpS6XbbN33nXGxwNECeMC_fG5-hZDLml8xw0XKo0dg/exec";
 
@@ -58,7 +57,6 @@ export default function ConviteHome() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLDivElement>(null);
 
-  
   useEffect(() => {
     setMounted(true);
     const weddingDate = new Date(2026, 6, 4, 19, 0, 0).getTime();
@@ -83,7 +81,6 @@ export default function ConviteHome() {
     return () => clearInterval(id);
   }, []);
 
-  
   useEffect(() => {
     const controller = new AbortController();
 
@@ -107,7 +104,6 @@ export default function ConviteHome() {
     return () => controller.abort();
   }, []);
 
-  
   useEffect(() => {
     const close = (e: MouseEvent | TouchEvent) => {
       if (
@@ -125,7 +121,6 @@ export default function ConviteHome() {
     };
   }, []);
 
-  
   useEffect(() => {
     const val = normalizeText(guestName);
     if (val.length < 2) {
@@ -134,7 +129,7 @@ export default function ConviteHome() {
       return;
     }
     const found = guestDatabase.filter((name) =>
-      normalizeText(name).includes(val)
+      normalizeText(name).includes(val),
     );
     setMatches(found);
     setShowDropdown(found.length > 0);
@@ -142,8 +137,7 @@ export default function ConviteHome() {
 
   const handleConfirm = async () => {
     const dbName = guestDatabase.find(
-      (guest: string) =>
-        normalizeText(guest) === normalizeText(guestName)
+      (guest: string) => normalizeText(guest) === normalizeText(guestName),
     );
     if (!dbName) return alert("Por favor, selecione seu nome na lista.");
     if (!guestEmail.includes("@"))
@@ -180,7 +174,6 @@ export default function ConviteHome() {
 
   return (
     <>
-    
       {/* ── FUNDO — gradiente CSS nativo, zero blur filter, zero repaint no scroll ── */}
       <div
         aria-hidden="true"
@@ -208,10 +201,7 @@ export default function ConviteHome() {
       </div>
 
       <main className="w-full min-h-screen pb-24 overflow-x-hidden relative z-10 bg-transparent">
-        
-
         <div className="pt-36 md:pt-44 flex flex-col items-center">
-
           {/* 1. CONTADOR */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -240,8 +230,8 @@ export default function ConviteHome() {
 
           {/* 2. CARROSSEL */}
           <section id="galeria" className="w-full">
-   <PhotoCarousel />
-</section>
+            <PhotoCarousel />
+          </section>
 
           {/* 3. RSVP */}
           <section className="w-full max-w-95 px-6 mb-16 relative">
@@ -307,11 +297,11 @@ export default function ConviteHome() {
           </section>
 
           {/* 4. ENVELOPE */}
-<section
-  id="cerimonia"
-  className="w-full max-w-130 px-4 mb-16 flex flex-col items-center relative scroll-mt-32"
-  style={{ isolation: "isolate" }}
->
+          <section
+            id="cerimonia"
+            className="w-full max-w-130 px-4 mb-16 flex flex-col items-center relative scroll-mt-32"
+            style={{ isolation: "isolate" }}
+          >
             <motion.div
               layout
               onClick={() => setEnvelopeOpen(!envelopeOpen)}
@@ -353,7 +343,7 @@ export default function ConviteHome() {
                         4 de Julho de 2026
                       </p>
                       <p className="font-(family-name:--font-crimson) text-xl text-gray-400 mt-2">
-                        às 19:00
+                        às 18:30
                       </p>
                     </div>
 
@@ -476,13 +466,32 @@ export default function ConviteHome() {
                 Esporte Fino
               </p>
               <p className="font-sans text-sm text-gray-600 mb-6 leading-relaxed">
-                Pedimos gentilmente que evitem a cor das madrinhas:
+                Pedimos gentilmente que evitem <br />a cor das madrinhas:
               </p>
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#B3CEE5]" />
-                <span className="text-[0.6rem] font-bold text-[#B3CEE5] tracking-widest uppercase mt-1">
-                  Azul Serenity
-                </span>
+              <div className="flex items-center justify-center gap-6 md:gap-8">
+                
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#C5D9EB]" />
+                  <span className="text-[0.6rem] font-bold text-[#C5D9EB] tracking-widest uppercase mt-1">
+                    Serenity Claro
+                  </span>
+                </div>
+
+                
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#B3CEE5]" />
+                  <span className="text-[0.6rem] font-bold text-[#B3CEE5] tracking-widest uppercase mt-1">
+                    Azul Serenity
+                  </span>
+                </div>
+
+                
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#9BBDE2]" />
+                  <span className="text-[0.6rem] font-bold text-[#9BBDE2] tracking-widest uppercase mt-1">
+                    Serenity Escuro
+                  </span>
+                </div>
               </div>
             </div>
           </section>
@@ -496,16 +505,16 @@ export default function ConviteHome() {
         </div>
 
         <footer className="w-full text-center pb-12 pt-8 mt-10 relative z-10 flex flex-col items-center">
-  {/* Linha divisória suave com gradiente */}
-  <div className="w-24 h-px bg-gradient-to-r from-transparent via-[#1278BC]/30 to-transparent mb-6" />
-  
-  <p className="font-[family-name:var(--font-crimson)] text-2xl text-[#1a2634]/70 italic">
-    Camila & Davi
-  </p>
-  <p className="font-sans text-[0.6rem] tracking-[0.3em] text-[#1278BC] uppercase mt-2 font-bold opacity-80">
-    04 . 07 . 2026
-  </p>
-</footer>
+          {/* Linha divisória suave com gradiente */}
+          <div className="w-24 h-px bg-gradient-to-r from-transparent via-[#1278BC]/30 to-transparent mb-6" />
+
+          <p className="font-[family-name:var(--font-crimson)] text-2xl text-[#1a2634]/70 italic">
+            Camila & Davi
+          </p>
+          <p className="font-sans text-[0.6rem] tracking-[0.3em] text-[#1278BC] uppercase mt-2 font-bold opacity-80">
+            04 . 07 . 2026
+          </p>
+        </footer>
       </main>
     </>
   );
