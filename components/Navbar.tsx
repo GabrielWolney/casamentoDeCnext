@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+import { useScroll, useMotionValueEvent } from "framer-motion";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -29,36 +29,23 @@ export default function Navbar() {
   });
 
   return (
-    <motion.nav
-      initial={false}
-      animate={{
-        width: isScrolled ? "92%" : "100%",
-        top: isScrolled ? 16 : 0,
-        borderRadius: isScrolled ? 30 : 0,
-      }}
-      transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}
-      className={`fixed inset-x-0 mx-auto z-[99999] flex justify-center items-center transition-all duration-500 ${
+    <nav
+      className={[
+        "fixed inset-x-0 mx-auto z-[99999]",
+        "flex justify-center items-center",
+        // CSS transition pura — sem Framer Motion no elemento fixo.
+        // motion.nav adiciona will-change:transform internamente, o que
+        // promove o nav a uma camada de compositor separada no Chrome.
+        // Essa camada perde a disputa de ordem com as camadas 3D das
+        // animações (rotateX do envelope, rotateY do carrossel) durante
+        // o scroll. CSS transitions não criam esse problema.
+        "transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]",
         isScrolled
-          ? "bg-white/45 backdrop-blur-xl saturate-[180%] border border-white/50 shadow-[0_12px_40px_-12px_rgba(18,120,188,0.2)]"
-          : "bg-transparent border-transparent"
-      }`}
+          ? "bg-white/45 backdrop-blur-xl saturate-[180%] border border-white/50 shadow-[0_12px_40px_-12px_rgba(18,120,188,0.2)] rounded-[30px] top-4 max-w-[92%]"
+          : "bg-transparent border-transparent rounded-none top-0 max-w-[1100px]",
+      ].join(" ")}
       style={{
-        maxWidth: "1100px",
         padding: isScrolled ? "10px 24px" : "25px 5%",
-        /*
-          These three lines are the Chrome compositor fix on the Navbar itself.
-
-          translateZ(0)      — promotes the nav to its own GPU layer immediately,
-                               so Chrome never batches it with page content layers.
-          backfaceVisibility — suppresses a Chrome-specific flicker that occurs
-                               when the layer is first promoted during scroll.
-          willChange         — tells Chrome to keep this layer resident on the GPU
-                               so it is never re-promoted mid-scroll (the moment
-                               re-promotion happens is when it disappears).
-        */
-        transform: "translateZ(0)",
-        backfaceVisibility: "hidden",
-        willChange: "transform",
       }}
     >
       <div
@@ -69,7 +56,7 @@ export default function Navbar() {
         <Link href="/" className="shrink-0">
           <Image
             src="/logo_casamento-aquarela.webp"
-            alt="Logo"
+            alt="Logo Camila e Davi"
             width={110}
             height={45}
             priority
@@ -97,6 +84,6 @@ export default function Navbar() {
           ))}
         </ul>
       </div>
-    </motion.nav>
+    </nav>
   );
 }
