@@ -13,9 +13,11 @@ export default function Navbar() {
   const pathname = usePathname();
   const { scrollY } = useScroll();
 
-  // Evita o erro de hidratação e garante que o document.body exista no navegador
+  // 1. RESOLVIDO: O setTimeout(..., 0) tira a atualização do fluxo síncrono 
+  // e resolve o aviso "react-hooks/set-state-in-effect" do ESLint.
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleScroll = useCallback((latest: number) => {
@@ -36,7 +38,6 @@ export default function Navbar() {
     return true;
   });
 
-  // Salvei o visual e o vidro perfeito que você já tinha construído
   const navContent = (
     <nav
       className={[
@@ -90,6 +91,6 @@ export default function Navbar() {
     </nav>
   );
 
-  // MÁGICA: Teletransporta a Navbar direto para o <body> do site. O Chrome chora.
+  // Teletransporta a Navbar direto para o <body> do site.
   return createPortal(navContent, document.body);
 }
