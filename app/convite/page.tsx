@@ -417,7 +417,7 @@ export default function ConviteHome() {
                         Recepção após a cerimônia
                       </p>
                       <p className="font-(family-name:--font-crimson) text-xl text-gray-700 mb-6 text-center">
-                        Recanto Oasis
+                        Recanto Oásis
                       </p>
                       <div className="flex gap-6">
                         <a

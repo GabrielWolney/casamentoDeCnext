@@ -40,7 +40,7 @@ export default function PresentesPage() {
               transition={{ delay: 0.2 }}
               className="text-[#7BC0E3] font-sans tracking-[0.2em] text-xs font-bold uppercase"
             >
-              Ajude-nos a construir nossa casa e nossa lua de mel dos sonhos!
+              Seu carinho faz parte do começo da nossa nova história!
             </motion.p>
           </header>
 

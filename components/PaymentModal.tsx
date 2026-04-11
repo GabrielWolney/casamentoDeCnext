@@ -5,7 +5,7 @@ import { formatCurrency } from "@/lib/utils";
 import { PixPayload } from "@/lib/pix";
 
 // SUAS CHAVES DO PIX AQUI
-const CHAVE_PIX = "07737349103";
+const CHAVE_PIX = "camilawdrumond@gmail.com";
 const NOME_NOIVOS = "CAMILA E DAVI";
 const CIDADE_NOIVOS = "BRASILIA";
 
@@ -109,7 +109,7 @@ export default function PaymentModal({
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
       alert(
-        "Pix copiado com sucesso! \n\nEnvie o comprovante de pagamento no WhatsApp do Davi ou da Camila!"
+        "Pix copiado com sucesso! \n\nSe quiser envie o comprovante de pagamento no WhatsApp do Davi ou da Camila!"
       );
     } catch (err) {
       console.error("Falha ao copiar:", err);
