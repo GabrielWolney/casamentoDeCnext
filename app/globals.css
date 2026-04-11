@@ -9,10 +9,6 @@
 
   body {
     background-color: #F4F9FD;
-    background-image:
-      radial-gradient(at 10% 10%, rgba(93,174,214,0.35) 0px, transparent 50%),
-      radial-gradient(at 90% 90%, rgba(159,210,236,0.4) 0px, transparent 50%);
-    background-attachment: fixed;
     color: var(--color-deep-blue);
     font-family: var(--font-body);
     line-height: 1.7;
@@ -20,9 +16,6 @@
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
     min-height: 100dvh;
-    overscroll-behavior-y: none;
-    /* APAGAMOS O overflow-x: hidden DAQUI */
-    /* APAGAMOS O -webkit-overflow-scrolling DAQUI */
   }
 
  body::before {

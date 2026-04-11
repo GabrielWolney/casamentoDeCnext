@@ -12,7 +12,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const { scrollY } = useScroll();
 
-  // O truque do setTimeout de volta para deixar o ESLint feliz!
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0);
     return () => clearTimeout(timer);
@@ -47,6 +46,8 @@ export default function Navbar() {
       ].join(" ")}
       style={{
         padding: isScrolled ? "10px 24px" : "25px 5%",
+        // Proteção extra de GPU para o iOS não piscar
+        WebkitTransform: "translate3d(0,0,0)",
       }}
     >
       <div
@@ -54,7 +55,7 @@ export default function Navbar() {
           isScrolled ? "" : "max-md:flex-col gap-4"
         }`}
       >
-        <Link href="/" className="shrink-0">
+        <Link href="/convite" className="shrink-0">
           <Image
             src="/logo_casamento-aquarela.webp"
             alt="Logo Camila e Davi"
