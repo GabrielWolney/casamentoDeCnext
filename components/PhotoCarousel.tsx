@@ -97,14 +97,7 @@ export default function PhotoCarousel() {
       <div
         className="relative w-full h-[360px] md:h-[400px] flex items-center justify-center"
         style={{
-          perspective: "1000px",
-          /*
-            isolation:isolate creates a stacking context that CONTAINS every
-            child compositor layer. Combined with the perspective context,
-            Chrome keeps all rotateY layers inside this box and cannot promote
-            them above the Navbar during scroll tile rasterisation.
-          */
-          isolation: "isolate",
+          perspective: "1000px"
         }}
       >
         <style dangerouslySetInnerHTML={{ __html: `

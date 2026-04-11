@@ -207,16 +207,7 @@ export default function ConviteHome() {
         />
       </div>
 
-      <main
-  className="w-full min-h-screen pb-24 overflow-x-hidden relative z-10 bg-transparent"
-  style={{
-    // Creates a new stacking context that CONTAINS all child
-    // compositor layers — they can no longer fight the Navbar
-    isolation: "isolate",
-    // Prevents Chrome from promoting this layer above the portal
-    contain: "layout style",
-  }}
->
+      <main className="w-full min-h-screen pb-24 overflow-x-hidden relative z-10 bg-transparent">
         
 
         <div className="pt-36 md:pt-44 flex flex-col items-center">

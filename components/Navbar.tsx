@@ -13,8 +13,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const { scrollY } = useScroll();
 
-  // 1. RESOLVIDO: O setTimeout(..., 0) tira a atualização do fluxo síncrono 
-  // e resolve o aviso "react-hooks/set-state-in-effect" do ESLint.
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0);
     return () => clearTimeout(timer);
@@ -26,7 +24,6 @@ export default function Navbar() {
 
   useMotionValueEvent(scrollY, "change", handleScroll);
 
-  // Se não montou ainda ou está na capa "/", não renderiza nada
   if (!mounted || pathname === "/") return null;
 
   const navLinks = [
@@ -50,6 +47,9 @@ export default function Navbar() {
       ].join(" ")}
       style={{
         padding: isScrolled ? "10px 24px" : "25px 5%",
+        /* Estes são os segredos para o Safari e Chrome Mobile: */
+        WebkitBackfaceVisibility: "hidden",
+        WebkitTransform: "translateZ(0)",
       }}
     >
       <div
@@ -57,7 +57,7 @@ export default function Navbar() {
           isScrolled ? "" : "max-md:flex-col gap-4"
         }`}
       >
-        <Link href="/" className="shrink-0">
+        <Link href="/convite" className="shrink-0">
           <Image
             src="/logo_casamento-aquarela.webp"
             alt="Logo Camila e Davi"
@@ -91,6 +91,5 @@ export default function Navbar() {
     </nav>
   );
 
-  // Teletransporta a Navbar direto para o <body> do site.
   return createPortal(navContent, document.body);
 }
