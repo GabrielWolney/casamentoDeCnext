@@ -308,8 +308,7 @@ export default function ConviteHome() {
               onClick={() => setEnvelopeOpen(!envelopeOpen)}
               className="w-[82%] max-w-120 bg-white rounded-t-[20px] shadow-sm pt-12 pb-36 px-8 text-center relative z-10 cursor-pointer overflow-hidden border-t border-x border-gray-100"
               animate={{ height: envelopeOpen ? "auto" : 280 }}
-              
-              transition={{ duration: 2.0, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 2, ease: [0.45, 0, 0.55, 1] }}
             >
               {!envelopeOpen && (
                 <motion.p 
@@ -338,6 +337,8 @@ export default function ConviteHome() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
+                  
+                    transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                     className="space-y-12 pb-10"
                   >
                     <div className="h-px bg-gray-100 w-full" />
