@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -10,12 +10,19 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const { scrollY } = useScroll();
+  
+  // 1. Criamos uma referência para capturar o nosso novo container de scroll
+  const scrollRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
+    // 2. Assim que o componente monta, ele acha a div que está rolando
+    scrollRef.current = document.getElementById("main-scroll-container");
     const timer = setTimeout(() => setMounted(true), 0);
     return () => clearTimeout(timer);
   }, []);
+
+  // 3. Avisamos ao Framer Motion para ouvir o scroll DESTA div, e não da janela
+  const { scrollY } = useScroll({ container: scrollRef });
 
   const handleScroll = useCallback((latest: number) => {
     setIsScrolled(latest > 50);
@@ -37,7 +44,7 @@ export default function Navbar() {
   return (
     <nav
       className={[
-        "fixed inset-x-0 mx-auto z-[99999]",
+        "absolute inset-x-0 mx-auto z-[99999]", // Mudamos de fixed para absolute!
         "flex justify-center items-center",
         "transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]",
         isScrolled
@@ -46,8 +53,6 @@ export default function Navbar() {
       ].join(" ")}
       style={{
         padding: isScrolled ? "10px 24px" : "25px 5%",
-        // Proteção extra de GPU para o iOS não piscar
-        WebkitTransform: "translate3d(0,0,0)",
       }}
     >
       <div

@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Crimson_Text, Alex_Brush } from "next/font/google";
 import "./globals.css";
-// IMPORTA ELA AQUI 👇
 import Navbar from "@/components/Navbar"; 
 
 const crimson = Crimson_Text({
@@ -30,9 +29,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://davi-e-camila.vercel.app'), 
   title: "Camila & Davi — Casamento",
   description: "Temos a alegria de convidar você para o nosso casamento. 04 de Julho de 2026.",
-  
   manifest: "/site.webmanifest",
-  
   openGraph: {
     type: "website",
     title: "Camila & Davi — Nosso Casamento",
@@ -64,10 +61,17 @@ export default function RootLayout({
       className={`${crimson.variable} ${alexBrush.variable}`}
       suppressHydrationWarning
     >
-      <body className="antialiased">
-          {/* RENDERIZA ELA AQUI 👇 */}
+      {/* 1. O body perde a capacidade de rolar e fica fixo do tamanho da tela */}
+      <body className="antialiased overflow-hidden w-full h-[100dvh] relative">
+          
+          {/* 2. A Navbar fica SOLTA no body, acima de tudo */}
           <Navbar />
-          {children}
+          
+          {/* 3. Criamos um "container de rolagem" independente para o site */}
+          <main id="main-scroll-container" className="w-full h-full overflow-y-auto overflow-x-hidden relative">
+            {children}
+          </main>
+
       </body>
     </html>
   );
