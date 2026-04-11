@@ -1,6 +1,5 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
 import GiftGrid from "@/components/GiftGrid";
 import { motion } from "framer-motion";
 
@@ -32,7 +31,6 @@ export default function PresentesPage() {
     contain: "layout style",
   }}
 >
-        <Navbar />
 
         <div className="pt-36 md:pt-44 max-w-7xl mx-auto px-6">
           <header className="text-center mb-16">
