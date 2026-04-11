@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 export default function PresentesPage() {
   return (
     <>
+    <Navbar />
       {/* ── FUNDO — gradiente CSS nativo, zero filter blur, zero stacking context extra ── */}
       <div
         aria-hidden="true"
@@ -32,7 +33,7 @@ export default function PresentesPage() {
     contain: "layout style",
   }}
 >
-        <Navbar />
+        
 
         <div className="pt-36 md:pt-44 max-w-7xl mx-auto px-6">
           <header className="text-center mb-16">

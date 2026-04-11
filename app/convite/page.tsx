@@ -181,6 +181,7 @@ export default function ConviteHome() {
 
   return (
     <>
+    <Navbar />
       {/* ── FUNDO — gradiente CSS nativo, zero blur filter, zero repaint no scroll ── */}
       <div
         aria-hidden="true"
@@ -217,7 +218,7 @@ export default function ConviteHome() {
     contain: "layout style",
   }}
 >
-        <Navbar />
+        
 
         <div className="pt-36 md:pt-44 flex flex-col items-center">
 

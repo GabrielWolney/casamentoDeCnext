@@ -42,28 +42,8 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="antialiased">
-        {/*
-          Navbar lives OUTSIDE the isolation wrapper so Chrome's compositor
-          never groups it with the 3D-transform layers inside pages.
-          The fixed + backdrop-filter layer is now in its own top-level
-          compositor slot, immune to children stacking context promotions.
-        */}
-
-        {/*
-          isolation:isolate creates a new stacking context that CONTAINS
-          every z-index, perspective, rotateX/Y layer inside pages.
-          Chrome cannot promote those child layers above this boundary,
-          which means they can never occlude the Navbar above.
-        */}
-        <div
-          style={{
-            isolation: "isolate",
-            position: "relative",
-            zIndex: 0,
-          }}
-        >
           {children}
-        </div>
+        
       </body>
     </html>
   );
