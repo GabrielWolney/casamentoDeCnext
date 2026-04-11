@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "@/components/Navbar";
 import { supabase } from "@/lib/supabase";
 import { SiGooglemaps, SiWaze } from "react-icons/si";
 import PhotoCarousel from "@/components/PhotoCarousel";
@@ -216,7 +217,7 @@ export default function ConviteHome() {
     contain: "layout style",
   }}
 >
-       
+        <Navbar />
 
         <div className="pt-36 md:pt-44 flex flex-col items-center">
 

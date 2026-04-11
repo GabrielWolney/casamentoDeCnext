@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Crimson_Text, Alex_Brush } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
 
 const crimson = Crimson_Text({
   subsets: ["latin"],
@@ -49,7 +48,6 @@ export default function RootLayout({
           The fixed + backdrop-filter layer is now in its own top-level
           compositor slot, immune to children stacking context promotions.
         */}
-        <Navbar />
 
         {/*
           isolation:isolate creates a new stacking context that CONTAINS
