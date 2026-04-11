@@ -15,7 +15,7 @@ import {
 import Image from "next/image";
 import { User } from "@supabase/supabase-js";
 
-// ── INTERFACES ──
+
 interface Foto {
   id: string;
   image_url: string;
@@ -29,7 +29,7 @@ interface Presente {
   image_url: string;
   is_custom: boolean;
   link?: string;
-  category: string; // <-- 1. Adicionado aqui
+  category: string; 
 }
 
 const INITIAL_GIFT: Presente = { 
@@ -38,7 +38,7 @@ const INITIAL_GIFT: Presente = {
   image_url: "", 
   is_custom: false,
   link: "",
-  category: "casa" // <-- 2. Valor padrão definido aqui
+  category: "casa" 
 };
 
 export default function AdminPage() {
@@ -52,10 +52,10 @@ export default function AdminPage() {
   const [presentes, setPresentes] = useState<Presente[]>([]);
   const [editingGift, setEditingGift] = useState<Presente>(INITIAL_GIFT);
   
-  // O nome do seu bucket no Supabase
+  
   const BUCKET_NAME = "casamento-imagens";
 
-  // ── BUSCA DE DADOS ──
+  
   const fetchData = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return;
@@ -90,7 +90,7 @@ export default function AdminPage() {
     if (user) fetchData();
   }, [user, fetchData]);
 
-  // ── AUTH ──
+  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -103,7 +103,7 @@ export default function AdminPage() {
     setPresentes([]);
   };
 
-  // ── AÇÕES ──
+  
   const deleteItem = async (table: string, id: string | undefined) => {
     if (!id || !confirm("Quer mesmo apagar?")) return;
     try {
@@ -121,7 +121,7 @@ export default function AdminPage() {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    setFotos(items); // Mudança visual imediata
+    setFotos(items); 
     
     try {
       const updates = items.map((item, index) => 
@@ -133,7 +133,7 @@ export default function AdminPage() {
     }
   };
 
-  // ── UPLOADS MELHORADOS (Usando o bucket 'casamento-imagens') ──
+  
   const handleUploadFotos = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     setLoading(true);

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 
 // SUAS CONFIGURAÇÕES
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwrsdUK6pVUkZvx4Zs6nckV4LOBu8tpw990FG9c94HZ-hB9DD22sFIMsHDiE5Bi6rHfKg/exec';
+const SCRIPT_URL = process.env.NEXT_PUBLIC_RSVP_SCRIPT_URL!;
 
 const normalizeText = (text: string) => 
   String(text).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();

@@ -4,10 +4,9 @@ import { useState, useEffect } from "react";
 import { formatCurrency } from "@/lib/utils";
 import { PixPayload } from "@/lib/pix";
 
-// SUAS CHAVES DO PIX AQUI
-const CHAVE_PIX = "camilawdrumond@gmail.com";
-const NOME_NOIVOS = "CAMILA E DAVI";
-const CIDADE_NOIVOS = "BRASILIA";
+const CHAVE_PIX = process.env.NEXT_PUBLIC_PIX_KEY!;
+const NOME_NOIVOS = process.env.NEXT_PUBLIC_PIX_NAME!;
+const CIDADE_NOIVOS = process.env.NEXT_PUBLIC_PIX_CITY!;
 
 interface PaymentModalProps {
   isOpen: boolean;

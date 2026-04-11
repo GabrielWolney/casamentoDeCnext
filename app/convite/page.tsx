@@ -8,7 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { SiGooglemaps, SiWaze } from "react-icons/si";
 import PhotoCarousel from "@/components/PhotoCarousel";
 
-// ── CONFIGURAÇÕES GLOBAIS ──
+
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbx_Q9y4vJfa-viSjW1GBXsySLS8NpS6XbbN33nXGxwNECeMC_fG5-hZDLml8xw0XKo0dg/exec";
 
@@ -58,7 +58,7 @@ export default function ConviteHome() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLDivElement>(null);
 
-  // ── TIMER com cleanup garantido ──
+  
   useEffect(() => {
     setMounted(true);
     const weddingDate = new Date(2026, 6, 4, 19, 0, 0).getTime();
@@ -83,7 +83,7 @@ export default function ConviteHome() {
     return () => clearInterval(id);
   }, []);
 
-  // ── FETCH com AbortController ──
+  
   useEffect(() => {
     const controller = new AbortController();
 
@@ -107,7 +107,7 @@ export default function ConviteHome() {
     return () => controller.abort();
   }, []);
 
-  // ── DROPDOWN: fecha ao clicar/tocar fora (mobile + desktop) ──
+  
   useEffect(() => {
     const close = (e: MouseEvent | TouchEvent) => {
       if (
@@ -125,7 +125,7 @@ export default function ConviteHome() {
     };
   }, []);
 
-  // ── AUTOCOMPLETE ──
+  
   useEffect(() => {
     const val = normalizeText(guestName);
     if (val.length < 2) {
