@@ -1,13 +1,12 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
 import GiftGrid from "@/components/GiftGrid";
 import { motion } from "framer-motion";
 
 export default function PresentesPage() {
   return (
     <>
-    <Navbar />
+
       {/* ── FUNDO — gradiente CSS nativo, zero filter blur, zero stacking context extra ── */}
       <div
         aria-hidden="true"

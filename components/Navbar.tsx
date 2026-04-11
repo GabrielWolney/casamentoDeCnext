@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -8,8 +9,14 @@ import { useScroll, useMotionValueEvent } from "framer-motion";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const { scrollY } = useScroll();
+
+  // Evita o erro de hidratação e garante que o document.body exista no navegador
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleScroll = useCallback((latest: number) => {
     setIsScrolled(latest > 50);
@@ -17,7 +24,8 @@ export default function Navbar() {
 
   useMotionValueEvent(scrollY, "change", handleScroll);
 
-  if (pathname === "/") return null;
+  // Se não montou ainda ou está na capa "/", não renderiza nada
+  if (!mounted || pathname === "/") return null;
 
   const navLinks = [
     { name: "Início", path: "/convite" },
@@ -28,17 +36,12 @@ export default function Navbar() {
     return true;
   });
 
-  return (
+  // Salvei o visual e o vidro perfeito que você já tinha construído
+  const navContent = (
     <nav
       className={[
         "fixed inset-x-0 mx-auto z-[99999]",
         "flex justify-center items-center",
-        // CSS transition pura — sem Framer Motion no elemento fixo.
-        // motion.nav adiciona will-change:transform internamente, o que
-        // promove o nav a uma camada de compositor separada no Chrome.
-        // Essa camada perde a disputa de ordem com as camadas 3D das
-        // animações (rotateX do envelope, rotateY do carrossel) durante
-        // o scroll. CSS transitions não criam esse problema.
         "transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]",
         isScrolled
           ? "bg-white/45 backdrop-blur-xl saturate-[180%] border border-white/50 shadow-[0_12px_40px_-12px_rgba(18,120,188,0.2)] rounded-[30px] top-4 max-w-[92%]"
@@ -53,7 +56,7 @@ export default function Navbar() {
           isScrolled ? "" : "max-md:flex-col gap-4"
         }`}
       >
-        <Link href="/" className="shrink-0">
+        <Link href="/convite" className="shrink-0">
           <Image
             src="/logo_casamento-aquarela.webp"
             alt="Logo Camila e Davi"
@@ -86,4 +89,7 @@ export default function Navbar() {
       </div>
     </nav>
   );
+
+  // MÁGICA: Teletransporta a Navbar direto para o <body> do site. O Chrome chora.
+  return createPortal(navContent, document.body);
 }

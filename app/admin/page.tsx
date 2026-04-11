@@ -11,7 +11,7 @@ import {
   DroppableProvided, 
   DraggableProvided 
 } from "@hello-pangea/dnd";
-import Navbar from "@/components/Navbar";
+
 import Image from "next/image";
 import { User } from "@supabase/supabase-js";
 
@@ -236,7 +236,7 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-screen bg-[#FDFDFD] pb-20 overflow-x-hidden">
-      <Navbar />
+      
       <div className="pt-32 max-w-6xl mx-auto px-6">
         <div className="flex justify-between items-center mb-10">
            <div className="flex gap-4">

@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import Navbar from "@/components/Navbar";
 import { supabase } from "@/lib/supabase";
 import { SiGooglemaps, SiWaze } from "react-icons/si";
 import PhotoCarousel from "@/components/PhotoCarousel";
@@ -181,7 +180,7 @@ export default function ConviteHome() {
 
   return (
     <>
-    <Navbar />
+    
       {/* ── FUNDO — gradiente CSS nativo, zero blur filter, zero repaint no scroll ── */}
       <div
         aria-hidden="true"

@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Crimson_Text, Alex_Brush } from "next/font/google";
 import "./globals.css";
+// IMPORTA ELA AQUI 👇
+import Navbar from "@/components/Navbar"; 
 
 const crimson = Crimson_Text({
   subsets: ["latin"],
@@ -42,8 +44,9 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="antialiased">
+          {/* RENDERIZA ELA AQUI 👇 */}
+          <Navbar />
           {children}
-        
       </body>
     </html>
   );
