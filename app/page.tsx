@@ -41,7 +41,7 @@ export default function CapaConvite() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
-        className="relative w-full max-w-[350px] drop-shadow-xl z-10"
+        className="relative w-full max-w-[350px] md:max-w-[450px] drop-shadow-xl z-10"
         style={{ perspective: "1200px" }}
       >
         <div className="relative w-full" style={{ paddingBottom: "62.99%" }}>

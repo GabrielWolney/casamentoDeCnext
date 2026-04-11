@@ -257,12 +257,14 @@ export default function AdminPage() {
              </div>
              
              <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable droppableId="fotos" direction="horizontal">
+              {/* 1. Mudamos a direction para "vertical" */}
+              <Droppable droppableId="fotos" direction="vertical">
                 {(provided: DroppableProvided) => (
                   <div 
                     {...provided.droppableProps} 
                     ref={provided.innerRef} 
-                    className="flex flex-wrap justify-start min-h-[200px] pt-4 -m-3"
+                    /* 2. Mudamos o layout pai para flex-col (lista vertical) com gap */
+                    className="flex flex-col gap-3 min-h-[200px] pt-4"
                   >
                     {fotos.map((foto, index) => (
                       <Draggable key={foto.id} draggableId={foto.id} index={index}>
@@ -271,18 +273,37 @@ export default function AdminPage() {
                             ref={providedDrag.innerRef} 
                             {...providedDrag.draggableProps} 
                             {...providedDrag.dragHandleProps} 
-                            className={`relative group w-28 h-36 m-3 cursor-grab active:cursor-grabbing transition-transform ${
-                              snapshot.isDragging ? 'scale-110 shadow-2xl z-50' : 'hover:scale-105'
+                            /* 3. Transformamos a foto num "Card Horizontal" elegante */
+                            className={`flex items-center justify-between p-3 bg-white border border-gray-100 rounded-2xl cursor-grab active:cursor-grabbing transition-all ${
+                              snapshot.isDragging ? 'shadow-xl scale-[1.02] z-50 ring-2 ring-[#7BC0E3]/50' : 'hover:shadow-md'
                             }`}
                           >
-                            <div className="w-full h-full rounded-2xl overflow-hidden border-2 border-white shadow-md bg-gray-50 relative pointer-events-none">
-                              <Image src={foto.image_url} alt="Foto" fill className="object-cover" sizes="112px" />
+                            <div className="flex items-center gap-4">
+                              {/* 4. Indicador visual de arrasto (Aqueles pontinhos clássicos) */}
+                              <div className="text-gray-300 flex flex-col gap-1 px-1">
+                                <div className="w-1 h-1 rounded-full bg-gray-300"></div>
+                                <div className="w-1 h-1 rounded-full bg-gray-300"></div>
+                                <div className="w-1 h-1 rounded-full bg-gray-300"></div>
+                              </div>
+                              
+                              <span className="font-bold text-gray-400 text-sm w-6">
+                                {index + 1}º
+                              </span>
+
+                              <div className="w-16 h-16 relative rounded-xl overflow-hidden border border-gray-100 bg-gray-50 pointer-events-none">
+                                <Image src={foto.image_url} alt="Foto" fill className="object-cover" sizes="64px" />
+                              </div>
+                              
+                              <span className="text-sm text-gray-600 truncate max-w-[150px] md:max-w-xs">
+                                Foto {index + 1}
+                              </span>
                             </div>
                             
                             <button 
                               onClick={(e) => { e.stopPropagation(); deleteItem("galeria", foto.id); }} 
-                              className="absolute -top-3 -right-3 bg-red-500 text-white w-8 h-8 rounded-full text-xs flex items-center justify-center shadow-lg md:opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="text-red-500 bg-red-50 w-8 h-8 rounded-full text-xs flex items-center justify-center shadow-sm hover:bg-red-100 hover:scale-110 transition-all"
                               type="button"
+                              title="Excluir foto"
                             >
                               ✕
                             </button>
@@ -317,7 +338,6 @@ export default function AdminPage() {
                   </label>
                 </div>
 
-                {/* 3. LIGAÇÃO DO SELECT DIRETO NO ESTADO DO PRESENTE */}
                 <label className="block text-sm font-medium mb-1">Destino do Presente</label>
                 <select 
                   value={editingGift.category || "casa"} 
@@ -362,7 +382,6 @@ export default function AdminPage() {
                       <p className="font-bold text-sm text-gray-800">{p.title}</p>
                       <p className="text-xs text-[#7BC0E3] font-semibold mt-1">
                         {p.is_custom ? "Cota (PIX/Livre)" : `R$ ${p.price}`}
-                        {/* 4. Indicação de Categoria na Listagem */}
                         <span className="ml-2 text-gray-400 font-medium capitalize border-l border-gray-200 pl-2">
                           {p.category || 'casa'}
                         </span>

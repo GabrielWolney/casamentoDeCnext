@@ -59,7 +59,8 @@ function GiftCard({ gift, openModal }: { gift: Gift; openModal: (g: Gift) => voi
       </span>
 
       {/* Container da Imagem com Skeleton Netflix */}
-      <div className="h-[180px] bg-gray-200/50 rounded-[16px] mb-5 relative overflow-hidden shrink-0">
+      {/* No mobile: h-[180px]. No PC: h-[220px] */}
+      <div className="h-[180px] md:h-[220px] bg-gray-200/50 rounded-[16px] mb-5 relative overflow-hidden shrink-0">
         {!imageLoaded && (
           <div className="absolute inset-0 z-10 overflow-hidden">
             <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent" />

@@ -233,7 +233,8 @@ export default function ConviteHome() {
           </section>
 
           {/* 3. RSVP */}
-          <section className="w-full max-w-95 px-6 mb-16 relative">
+          {/* No mobile: w-full max-w-95 mb-16. No PC: max-w-2xl mb-24 */}
+          <section className="w-full max-w-95 md:max-w-2xl px-6 mb-16 md:mb-24 relative">
             <div
               className={`${glassStyle} rounded-[35px] p-8 flex flex-col items-center`}
             >
@@ -296,9 +297,10 @@ export default function ConviteHome() {
           </section>
 
           {/* 4. ENVELOPE */}
+          {/* No mobile: mb-16. No PC: mb-24 */}
           <section
             id="cerimonia"
-            className="w-full max-w-130 px-4 mb-16 flex flex-col items-center relative scroll-mt-32"
+            className="w-full max-w-130 px-4 mb-16 md:mb-24 flex flex-col items-center relative scroll-mt-32"
             style={{ isolation: "isolate" }}
           >
             <motion.div
@@ -458,7 +460,8 @@ export default function ConviteHome() {
           </section>
 
           {/* 5. DRESS CODE */}
-          <section className="w-full max-w-95 px-6 mb-16 relative">
+          {/* No mobile: max-w-95 mb-16. No PC: max-w-2xl mb-24 */}
+          <section className="w-full max-w-95 md:max-w-2xl px-6 mb-16 md:mb-24 relative">
             <div
               className={`${glassStyle} rounded-[35px] p-8 flex flex-col items-center text-center`}
             >
