@@ -27,9 +27,30 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://casamento-dc.vercel.app"),
+  metadataBase: new URL('https://davi-e-camila.vercel.app'), 
   title: "Camila & Davi — Casamento",
-  description: "Convite de casamento — 04 de Julho de 2026",
+  description: "Temos a alegria de convidar você para o nosso casamento. 04 de Julho de 2026.",
+  
+  manifest: "/site.webmanifest",
+  
+  openGraph: {
+    type: "website",
+    title: "Camila & Davi — Nosso Casamento",
+    description: "Você é nosso convidado especial! Confirme sua presença e veja os detalhes do nosso grande dia.",
+    siteName: "Casamento Camila & Davi",
+    images: [{
+      url: '/share-image.webp', 
+      width: 1200,
+      height: 630,
+      alt: 'Convite de Casamento - Camila & Davi',
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Camila & Davi — Nosso Casamento",
+    description: "Confirme sua presença e veja os detalhes do nosso grande dia.",
+    images: ['/share-image.webp'],
+  },
 };
 
 export default function RootLayout({

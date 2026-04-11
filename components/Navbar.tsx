@@ -57,7 +57,7 @@ export default function Navbar() {
           isScrolled ? "" : "max-md:flex-col gap-4"
         }`}
       >
-        <Link href="/convite" className="shrink-0">
+        <Link href="/" className="shrink-0">
           <Image
             src="/logo_casamento-aquarela.webp"
             alt="Logo Camila e Davi"
