@@ -201,6 +201,22 @@ export default function ConviteHome() {
 
       <main className="w-full min-h-screen pb-24 overflow-x-hidden relative z-10 bg-transparent">
         <div className="pt-36 md:pt-44 flex flex-col items-center">
+          
+          {/* NOME E DATA ACIMA DO CONTADOR */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="flex flex-col items-center mb-8 text-center"
+          >
+            <h1 className="font-[family-name:var(--font-crimson)] text-4xl md:text-5xl text-[#1a2634]/80 italic mb-2">
+              Camila & Davi
+            </h1>
+            <p className="font-sans text-[0.65rem] md:text-xs tracking-[0.3em] text-[#1278BC] uppercase font-bold opacity-80">
+              04 . 07 . 2026
+            </p>
+          </motion.div>
+
           {/* 1. CONTADOR */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
