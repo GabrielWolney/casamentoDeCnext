@@ -79,7 +79,8 @@ export default function PhotoCarousel() {
     if (offset.x < -40) nextSlide();
     if (offset.x > 40) prevSlide();
   };
-
+  
+  
   const variants = {
     center:      { x: "0%",    scale: 1,    zIndex: 50, opacity: 1,   rotateY: 0  },
     right1:      { x: "70%",   scale: 0.85, zIndex: 40, opacity: 1,   rotateY: -15 },

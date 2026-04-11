@@ -309,9 +309,13 @@ export default function ConviteHome() {
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
               {!envelopeOpen && (
-                <p className="text-[0.6rem] tracking-widest text-gray-400 uppercase mb-2 font-semibold">
-                  Clique e veja os
-                </p>
+                <motion.p 
+                  animate={{ opacity: [0.4, 1, 0.4] }}
+                  transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                  className="text-[0.65rem] tracking-[0.2em] text-[#7BC0E3] uppercase mb-4 font-bold"
+                >
+                  Toque para abrir
+                </motion.p>
               )}
               <h3 className="font-(family-name:--font-alex) text-5xl text-[#333] leading-[0.8] mb-8">
                 {envelopeOpen ? (
