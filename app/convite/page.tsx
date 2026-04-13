@@ -3,11 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { SiGooglemaps, SiWaze } from "react-icons/si";
 import PhotoCarousel from "@/components/PhotoCarousel";
 
+// ── CONFIGURAÇÕES GLOBAIS ──
 const SCRIPT_URL = process.env.NEXT_PUBLIC_RSVP_SCRIPT_URL!;
 
 const normalizeText = (text: string) =>
@@ -41,6 +42,7 @@ export default function ConviteHome() {
     minutes: 0,
     seconds: 0,
   });
+  
   const [envelopeOpen, setEnvelopeOpen] = useState(false);
 
   const [guestName, setGuestName] = useState("");
@@ -56,6 +58,24 @@ export default function ConviteHome() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLDivElement>(null);
 
+  // ── REFS E ESTADOS DA ANIMAÇÃO DO ENVELOPE ──
+  const envelopeRef = useRef<HTMLDivElement>(null);
+  const [hasAutoOpened, setHasAutoOpened] = useState(false);
+  
+// margin: "top right bottom left"
+  // "-55%" no bottom significa que a linha de gatilho subiu da base até um pouco acima do meio da tela.
+  // Aumentei para -75% no bottom. O envelope tem que subir bastante pra abrir!
+  const isEnvelopeInView = useInView(envelopeRef, { once: true, margin: "0px 0px -75% 0px" });
+
+  useEffect(() => {
+    // Abre automaticamente se estiver na visão correta E se ainda não tiver aberto automaticamente
+    if (isEnvelopeInView && !hasAutoOpened) {
+      setEnvelopeOpen(true);
+      setHasAutoOpened(true); // Marca que o "cartucho" automático já foi usado
+    }
+  }, [isEnvelopeInView, hasAutoOpened]);
+
+  // ── TIMER com cleanup garantido ──
   useEffect(() => {
     setMounted(true);
     const weddingDate = new Date(2026, 6, 4, 19, 0, 0).getTime();
@@ -80,6 +100,7 @@ export default function ConviteHome() {
     return () => clearInterval(id);
   }, []);
 
+  // ── FETCH com AbortController ──
   useEffect(() => {
     const controller = new AbortController();
 
@@ -103,6 +124,7 @@ export default function ConviteHome() {
     return () => controller.abort();
   }, []);
 
+  // ── DROPDOWN: fecha ao clicar/tocar fora (mobile + desktop) ──
   useEffect(() => {
     const close = (e: MouseEvent | TouchEvent) => {
       if (
@@ -120,6 +142,7 @@ export default function ConviteHome() {
     };
   }, []);
 
+  // ── AUTOCOMPLETE ──
   useEffect(() => {
     const val = normalizeText(guestName);
     if (val.length < 2) {
@@ -128,7 +151,7 @@ export default function ConviteHome() {
       return;
     }
     const found = guestDatabase.filter((name) =>
-      normalizeText(name).includes(val),
+      normalizeText(name).includes(val)
     );
     setMatches(found);
     setShowDropdown(found.length > 0);
@@ -136,7 +159,8 @@ export default function ConviteHome() {
 
   const handleConfirm = async () => {
     const dbName = guestDatabase.find(
-      (guest: string) => normalizeText(guest) === normalizeText(guestName),
+      (guest: string) =>
+        normalizeText(guest) === normalizeText(guestName)
     );
     if (!dbName) return alert("Por favor, selecione seu nome na lista.");
     if (!guestEmail.includes("@"))
@@ -199,23 +223,19 @@ export default function ConviteHome() {
         />
       </div>
 
-      <main className="w-full min-h-screen pb-24 overflow-x-hidden relative z-10 bg-transparent">
+      <main
+        className="w-full min-h-screen pb-24 overflow-x-hidden relative z-10 bg-transparent"
+        style={{
+          // Creates a new stacking context that CONTAINS all child
+          // compositor layers — they can no longer fight the Navbar
+          isolation: "isolate",
+          // Prevents Chrome from promoting this layer above the portal
+          contain: "layout style",
+        }}
+      >
+        
+
         <div className="pt-36 md:pt-44 flex flex-col items-center">
-          
-          {/* NOME E DATA ACIMA DO CONTADOR */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="flex flex-col items-center mb-8 text-center"
-          >
-            <h1 className="font-[family-name:var(--font-crimson)] text-4xl md:text-5xl text-[#1a2634]/80 italic mb-2">
-              Camila & Davi
-            </h1>
-            <p className="font-sans text-[0.65rem] md:text-xs tracking-[0.3em] text-[#1278BC] uppercase font-bold opacity-80">
-              04 . 07 . 2026
-            </p>
-          </motion.div>
 
           {/* 1. CONTADOR */}
           <motion.div
@@ -249,8 +269,7 @@ export default function ConviteHome() {
           </section>
 
           {/* 3. RSVP */}
-          {/* No mobile: w-full max-w-95 mb-16. No PC: max-w-2xl mb-24 */}
-          <section className="w-full max-w-95 md:max-w-2xl px-6 mb-16 md:mb-24 relative">
+          <section className="w-full max-w-95 px-6 mb-16 relative">
             <div
               className={`${glassStyle} rounded-[35px] p-8 flex flex-col items-center`}
             >
@@ -313,21 +332,22 @@ export default function ConviteHome() {
           </section>
 
           {/* 4. ENVELOPE */}
-          {/* No mobile: mb-16. No PC: mb-24 */}
           <section
             id="cerimonia"
-            className="w-full max-w-130 px-4 mb-16 md:mb-24 flex flex-col items-center relative scroll-mt-32"
+            className="w-full max-w-130 px-4 mb-16 flex flex-col items-center relative scroll-mt-32"
             style={{ isolation: "isolate" }}
           >
             <motion.div
+              ref={envelopeRef}
               layout
               onClick={() => setEnvelopeOpen(!envelopeOpen)}
               className="w-[82%] max-w-120 bg-white rounded-t-[20px] shadow-sm pt-12 pb-36 px-8 text-center relative z-10 cursor-pointer overflow-hidden border-t border-x border-gray-100"
               animate={{ height: envelopeOpen ? "auto" : 280 }}
+              // A sua transição original, longa e cinematográfica, está de volta!
               transition={{ duration: 2, ease: [0.45, 0, 0.55, 1] }}
             >
               {!envelopeOpen && (
-                <motion.p 
+                <motion.p
                   animate={{ opacity: [0.4, 1, 0.4] }}
                   transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
                   className="text-[0.65rem] tracking-[0.2em] text-[#7BC0E3] uppercase mb-4 font-bold"
@@ -353,8 +373,7 @@ export default function ConviteHome() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                  
-                    transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                    transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
                     className="space-y-12 pb-10"
                   >
                     <div className="h-px bg-gray-100 w-full" />
@@ -366,7 +385,7 @@ export default function ConviteHome() {
                         4 de Julho de 2026
                       </p>
                       <p className="font-(family-name:--font-crimson) text-xl text-gray-400 mt-2">
-                        às 18:30
+                        às 19:00
                       </p>
                     </div>
 
@@ -430,7 +449,7 @@ export default function ConviteHome() {
                         Recepção após a cerimônia
                       </p>
                       <p className="font-(family-name:--font-crimson) text-xl text-gray-700 mb-6 text-center">
-                        Recanto Oásis
+                        Recanto Oasis
                       </p>
                       <div className="flex gap-6">
                         <a
@@ -478,8 +497,7 @@ export default function ConviteHome() {
           </section>
 
           {/* 5. DRESS CODE */}
-          {/* No mobile: max-w-95 mb-16. No PC: max-w-2xl mb-24 */}
-          <section className="w-full max-w-95 md:max-w-2xl px-6 mb-16 md:mb-24 relative">
+          <section className="w-full max-w-95 px-6 mb-16 relative">
             <div
               className={`${glassStyle} rounded-[35px] p-8 flex flex-col items-center text-center`}
             >
@@ -490,32 +508,13 @@ export default function ConviteHome() {
                 Esporte Fino
               </p>
               <p className="font-sans text-sm text-gray-600 mb-6 leading-relaxed">
-                Pedimos gentilmente que evitem <br />a cor das madrinhas:
+                Pedimos gentilmente que evitem a cor das madrinhas:
               </p>
-              <div className="flex items-center justify-center gap-6 md:gap-8">
-                
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#C5D9EB]" />
-                  <span className="text-[0.6rem] font-bold text-[#C5D9EB] tracking-widest uppercase mt-1">
-                    Serenity Claro
-                  </span>
-                </div>
-
-                
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#B3CEE5]" />
-                  <span className="text-[0.6rem] font-bold text-[#B3CEE5] tracking-widest uppercase mt-1">
-                    Azul Serenity
-                  </span>
-                </div>
-
-                
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#9BBDE2]" />
-                  <span className="text-[0.6rem] font-bold text-[#9BBDE2] tracking-widest uppercase mt-1">
-                    Serenity Escuro
-                  </span>
-                </div>
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#B3CEE5]" />
+                <span className="text-[0.6rem] font-bold text-[#B3CEE5] tracking-widest uppercase mt-1">
+                  Azul Serenity
+                </span>
               </div>
             </div>
           </section>
@@ -531,7 +530,7 @@ export default function ConviteHome() {
         <footer className="w-full text-center pb-12 pt-8 mt-10 relative z-10 flex flex-col items-center">
           {/* Linha divisória suave com gradiente */}
           <div className="w-24 h-px bg-gradient-to-r from-transparent via-[#1278BC]/30 to-transparent mb-6" />
-
+          
           <p className="font-[family-name:var(--font-crimson)] text-2xl text-[#1a2634]/70 italic">
             Camila & Davi
           </p>
