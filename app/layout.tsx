@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Crimson_Text, Alex_Brush } from "next/font/google";
+import { Crimson_Text, Alex_Brush, Poppins } from "next/font/google"; // 1. Adicionamos a Poppins aqui
 import "./globals.css";
 import Navbar from "@/components/Navbar"; 
 
@@ -14,6 +14,14 @@ const alexBrush = Alex_Brush({
   subsets: ["latin"],
   weight: ["400"],
   variable: "--font-alex",
+  display: "swap",
+});
+
+// 2. Configuramos a Poppins
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
   display: "swap",
 });
 
@@ -58,20 +66,15 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${crimson.variable} ${alexBrush.variable}`}
+      // 3. Injetamos a variável da Poppins no HTML
+      className={`${crimson.variable} ${alexBrush.variable} ${poppins.variable}`}
       suppressHydrationWarning
     >
-      {/* 1. O body perde a capacidade de rolar e fica fixo do tamanho da tela */}
       <body className="antialiased overflow-hidden w-full h-[100dvh] relative">
-          
-          {/* 2. A Navbar fica SOLTA no body, acima de tudo */}
           <Navbar />
-          
-          {/* 3. Criamos um "container de rolagem" independente para o site */}
           <main id="main-scroll-container" className="w-full h-full overflow-y-auto overflow-x-hidden relative">
             {children}
           </main>
-
       </body>
     </html>
   );

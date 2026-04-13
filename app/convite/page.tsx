@@ -62,9 +62,7 @@ export default function ConviteHome() {
   const envelopeRef = useRef<HTMLDivElement>(null);
   const [hasAutoOpened, setHasAutoOpened] = useState(false);
   
-// margin: "top right bottom left"
-  // "-55%" no bottom significa que a linha de gatilho subiu da base até um pouco acima do meio da tela.
-  // Aumentei para -75% no bottom. O envelope tem que subir bastante pra abrir!
+  // "-75%" no bottom: o envelope só abre quando estiver nos 25% superiores da tela.
   const isEnvelopeInView = useInView(envelopeRef, { once: true, margin: "0px 0px -75% 0px" });
 
   useEffect(() => {
@@ -223,19 +221,23 @@ export default function ConviteHome() {
         />
       </div>
 
-      <main
-        className="w-full min-h-screen pb-24 overflow-x-hidden relative z-10 bg-transparent"
-        style={{
-          // Creates a new stacking context that CONTAINS all child
-          // compositor layers — they can no longer fight the Navbar
-          isolation: "isolate",
-          // Prevents Chrome from promoting this layer above the portal
-          contain: "layout style",
-        }}
-      >
-        
-
+      <main className="w-full min-h-screen pb-24 overflow-x-hidden relative z-10 bg-transparent">
         <div className="pt-36 md:pt-44 flex flex-col items-center">
+          
+          {/* NOME E DATA ACIMA DO CONTADOR */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="flex flex-col items-center mb-8 text-center"
+          >
+            <h1 className="font-[family-name:var(--font-crimson)] text-4xl md:text-5xl text-[#1a2634]/80 italic mb-2">
+              Camila & Davi
+            </h1>
+            <p className="font-sans text-[0.65rem] md:text-xs tracking-[0.3em] text-[#1278BC] uppercase font-bold opacity-80">
+              04 . 07 . 2026
+            </p>
+          </motion.div>
 
           {/* 1. CONTADOR */}
           <motion.div
@@ -338,22 +340,17 @@ export default function ConviteHome() {
             style={{ isolation: "isolate" }}
           >
             <motion.div
-              ref={envelopeRef}
+              ref={envelopeRef} // <-- COLOCADO AQUI PARA A MÁGICA FUNCIONAR
               layout
               onClick={() => setEnvelopeOpen(!envelopeOpen)}
               className="w-[82%] max-w-120 bg-white rounded-t-[20px] shadow-sm pt-12 pb-36 px-8 text-center relative z-10 cursor-pointer overflow-hidden border-t border-x border-gray-100"
               animate={{ height: envelopeOpen ? "auto" : 280 }}
-              // A sua transição original, longa e cinematográfica, está de volta!
-              transition={{ duration: 2, ease: [0.45, 0, 0.55, 1] }}
+              transition={{ duration: 2, ease: [0.45, 0, 0.55, 1] }} // SUA CURVA E TEMPO ORIGINAIS
             >
               {!envelopeOpen && (
-                <motion.p
-                  animate={{ opacity: [0.4, 1, 0.4] }}
-                  transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-                  className="text-[0.65rem] tracking-[0.2em] text-[#7BC0E3] uppercase mb-4 font-bold"
-                >
-                  Toque para abrir
-                </motion.p>
+                <p className="text-[0.6rem] tracking-widest text-gray-400 uppercase mb-2 font-semibold">
+                  Clique e veja os
+                </p>
               )}
               <h3 className="font-(family-name:--font-alex) text-5xl text-[#333] leading-[0.8] mb-8">
                 {envelopeOpen ? (
@@ -373,7 +370,7 @@ export default function ConviteHome() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+                    transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }} // DELAY AUMENTADO PARA O TEXTO APARECER NA HORA CERTA
                     className="space-y-12 pb-10"
                   >
                     <div className="h-px bg-gray-100 w-full" />

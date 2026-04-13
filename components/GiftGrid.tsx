@@ -80,7 +80,7 @@ function GiftCard({ gift, openModal }: { gift: Gift; openModal: (g: Gift) => voi
       </div>
 
       {/* Informações */}
-      <h3 className="font-[family-name:var(--font-crimson)] text-xl font-semibold text-[#1a2634] leading-tight">
+      <h3 className="font-[family-name:var(--font-poppins)] text-lg md:text-xl font-semibold text-[#1a2634] leading-tight">
         {gift.title}
       </h3>
       <p className="font-semibold text-[1.1rem] my-[5px] mb-[15px] text-[#1278BC]">
