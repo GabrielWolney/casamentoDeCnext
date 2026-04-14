@@ -8,7 +8,6 @@ import { supabase } from "@/lib/supabase";
 import { SiGooglemaps, SiWaze } from "react-icons/si";
 import PhotoCarousel from "@/components/PhotoCarousel";
 
-// ── CONFIGURAÇÕES GLOBAIS ──
 const SCRIPT_URL = process.env.NEXT_PUBLIC_RSVP_SCRIPT_URL!;
 
 const normalizeText = (text: string) =>
@@ -42,7 +41,6 @@ export default function ConviteHome() {
     minutes: 0,
     seconds: 0,
   });
-  
   const [envelopeOpen, setEnvelopeOpen] = useState(false);
 
   const [guestName, setGuestName] = useState("");
@@ -58,7 +56,7 @@ export default function ConviteHome() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLDivElement>(null);
 
-  // ── REFS E ESTADOS DA ANIMAÇÃO DO ENVELOPE ──
+  // ── REFS E ESTADOS DA ANIMAÇÃO DO ENVELOPE (A única adição de lógica) ──
   const envelopeRef = useRef<HTMLDivElement>(null);
   const [hasAutoOpened, setHasAutoOpened] = useState(false);
   
@@ -73,7 +71,6 @@ export default function ConviteHome() {
     }
   }, [isEnvelopeInView, hasAutoOpened]);
 
-  // ── TIMER com cleanup garantido ──
   useEffect(() => {
     setMounted(true);
     const weddingDate = new Date(2026, 6, 4, 19, 0, 0).getTime();
@@ -98,7 +95,6 @@ export default function ConviteHome() {
     return () => clearInterval(id);
   }, []);
 
-  // ── FETCH com AbortController ──
   useEffect(() => {
     const controller = new AbortController();
 
@@ -122,7 +118,6 @@ export default function ConviteHome() {
     return () => controller.abort();
   }, []);
 
-  // ── DROPDOWN: fecha ao clicar/tocar fora (mobile + desktop) ──
   useEffect(() => {
     const close = (e: MouseEvent | TouchEvent) => {
       if (
@@ -140,7 +135,6 @@ export default function ConviteHome() {
     };
   }, []);
 
-  // ── AUTOCOMPLETE ──
   useEffect(() => {
     const val = normalizeText(guestName);
     if (val.length < 2) {
@@ -149,7 +143,7 @@ export default function ConviteHome() {
       return;
     }
     const found = guestDatabase.filter((name) =>
-      normalizeText(name).includes(val)
+      normalizeText(name).includes(val),
     );
     setMatches(found);
     setShowDropdown(found.length > 0);
@@ -157,8 +151,7 @@ export default function ConviteHome() {
 
   const handleConfirm = async () => {
     const dbName = guestDatabase.find(
-      (guest: string) =>
-        normalizeText(guest) === normalizeText(guestName)
+      (guest: string) => normalizeText(guest) === normalizeText(guestName),
     );
     if (!dbName) return alert("Por favor, selecione seu nome na lista.");
     if (!guestEmail.includes("@"))
@@ -271,7 +264,8 @@ export default function ConviteHome() {
           </section>
 
           {/* 3. RSVP */}
-          <section className="w-full max-w-95 px-6 mb-16 relative">
+          {/* No mobile: w-full max-w-95 mb-16. No PC: max-w-2xl mb-24 */}
+          <section className="w-full max-w-95 md:max-w-2xl px-6 mb-16 md:mb-24 relative">
             <div
               className={`${glassStyle} rounded-[35px] p-8 flex flex-col items-center`}
             >
@@ -334,9 +328,10 @@ export default function ConviteHome() {
           </section>
 
           {/* 4. ENVELOPE */}
+          {/* No mobile: mb-16. No PC: mb-24 */}
           <section
             id="cerimonia"
-            className="w-full max-w-130 px-4 mb-16 flex flex-col items-center relative scroll-mt-32"
+            className="w-full max-w-130 px-4 mb-16 md:mb-24 flex flex-col items-center relative scroll-mt-32"
             style={{ isolation: "isolate" }}
           >
             <motion.div
@@ -345,12 +340,16 @@ export default function ConviteHome() {
               onClick={() => setEnvelopeOpen(!envelopeOpen)}
               className="w-[82%] max-w-120 bg-white rounded-t-[20px] shadow-sm pt-12 pb-36 px-8 text-center relative z-10 cursor-pointer overflow-hidden border-t border-x border-gray-100"
               animate={{ height: envelopeOpen ? "auto" : 280 }}
-              transition={{ duration: 2, ease: [0.45, 0, 0.55, 1] }} // SUA CURVA E TEMPO ORIGINAIS
+              transition={{ duration: 2, ease: [0.45, 0, 0.55, 1] }}
             >
               {!envelopeOpen && (
-                <p className="text-[0.6rem] tracking-widest text-gray-400 uppercase mb-2 font-semibold">
-                  Clique e veja os
-                </p>
+                <motion.p 
+                  animate={{ opacity: [0.4, 1, 0.4] }}
+                  transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                  className="text-[0.65rem] tracking-[0.2em] text-[#7BC0E3] uppercase mb-4 font-bold"
+                >
+                  Toque para abrir
+                </motion.p>
               )}
               <h3 className="font-(family-name:--font-alex) text-5xl text-[#333] leading-[0.8] mb-8">
                 {envelopeOpen ? (
@@ -370,7 +369,7 @@ export default function ConviteHome() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }} // DELAY AUMENTADO PARA O TEXTO APARECER NA HORA CERTA
+                    transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }} // Aumento do delay para a animação ficar no ritmo correto
                     className="space-y-12 pb-10"
                   >
                     <div className="h-px bg-gray-100 w-full" />
@@ -382,7 +381,7 @@ export default function ConviteHome() {
                         4 de Julho de 2026
                       </p>
                       <p className="font-(family-name:--font-crimson) text-xl text-gray-400 mt-2">
-                        às 19:00
+                        às 18:30
                       </p>
                     </div>
 
@@ -446,7 +445,7 @@ export default function ConviteHome() {
                         Recepção após a cerimônia
                       </p>
                       <p className="font-(family-name:--font-crimson) text-xl text-gray-700 mb-6 text-center">
-                        Recanto Oasis
+                        Recanto Oásis
                       </p>
                       <div className="flex gap-6">
                         <a
@@ -494,7 +493,8 @@ export default function ConviteHome() {
           </section>
 
           {/* 5. DRESS CODE */}
-          <section className="w-full max-w-95 px-6 mb-16 relative">
+          {/* No mobile: max-w-95 mb-16. No PC: max-w-2xl mb-24 */}
+          <section className="w-full max-w-95 md:max-w-2xl px-6 mb-16 md:mb-24 relative">
             <div
               className={`${glassStyle} rounded-[35px] p-8 flex flex-col items-center text-center`}
             >
@@ -505,13 +505,32 @@ export default function ConviteHome() {
                 Esporte Fino
               </p>
               <p className="font-sans text-sm text-gray-600 mb-6 leading-relaxed">
-                Pedimos gentilmente que evitem a cor das madrinhas:
+                Pedimos gentilmente que evitem <br />a cor das madrinhas:
               </p>
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#B3CEE5]" />
-                <span className="text-[0.6rem] font-bold text-[#B3CEE5] tracking-widest uppercase mt-1">
-                  Azul Serenity
-                </span>
+              <div className="flex items-center justify-center gap-6 md:gap-8">
+                
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#C5D9EB]" />
+                  <span className="text-[0.6rem] font-bold text-[#C5D9EB] tracking-widest uppercase mt-1">
+                    Serenity Claro
+                  </span>
+                </div>
+
+                
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#B3CEE5]" />
+                  <span className="text-[0.6rem] font-bold text-[#B3CEE5] tracking-widest uppercase mt-1">
+                    Azul Serenity
+                  </span>
+                </div>
+
+                
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-14 h-14 rounded-full border-4 border-white/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1),0_4px_10px_rgba(0,0,0,0.05)] bg-[#9BBDE2]" />
+                  <span className="text-[0.6rem] font-bold text-[#9BBDE2] tracking-widest uppercase mt-1">
+                    Serenity Escuro
+                  </span>
+                </div>
               </div>
             </div>
           </section>
@@ -527,7 +546,7 @@ export default function ConviteHome() {
         <footer className="w-full text-center pb-12 pt-8 mt-10 relative z-10 flex flex-col items-center">
           {/* Linha divisória suave com gradiente */}
           <div className="w-24 h-px bg-gradient-to-r from-transparent via-[#1278BC]/30 to-transparent mb-6" />
-          
+
           <p className="font-[family-name:var(--font-crimson)] text-2xl text-[#1a2634]/70 italic">
             Camila & Davi
           </p>
