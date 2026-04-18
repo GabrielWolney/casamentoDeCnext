@@ -51,11 +51,26 @@ function SkeletonGiftCard() {
 function GiftCard({ gift, openModal }: { gift: Gift; openModal: (g: Gift) => void }) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // MÁGICA AQUI: Garante que o link do Mercado Pago sempre comece com https://
-  // Sem isso, se o link for cadastrado apenas como "mpago.la/xyz", o Next.js quebra a nova aba.
   const formatLink = (url: string | null) => {
     if (!url) return "#";
     return url.startsWith("http") ? url : `https://${url}`;
+  };
+
+  // MÁGICA AQUI: Função inteligente para lidar com o clique
+  const handlePaymentClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault(); // Impede o comportamento padrão do link
+    const url = formatLink(gift.link);
+    
+    // Detecta se o usuário está em um celular
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      // No celular, navegamos na mesma aba para o fallback do Mercado Pago funcionar
+      window.location.href = url;
+    } else {
+      // No computador, abrimos uma nova aba em segurança
+      window.open(url, "_blank");
+    }
   };
 
   return (
@@ -66,7 +81,6 @@ function GiftCard({ gift, openModal }: { gift: Gift; openModal: (g: Gift) => voi
       </span>
 
       {/* Container da Imagem com Skeleton Netflix */}
-      {/* No mobile: h-[180px]. No PC: h-[220px] */}
       <div className="h-[180px] md:h-[220px] bg-gray-200/50 rounded-[16px] mb-5 relative overflow-hidden shrink-0">
         {!imageLoaded && (
           <div className="absolute inset-0 z-10 overflow-hidden">
@@ -96,19 +110,16 @@ function GiftCard({ gift, openModal }: { gift: Gift; openModal: (g: Gift) => voi
 
       {/* Botões */}
       <div className="mt-auto pt-4 flex gap-2">
-        {/* Usamos a função formatLink e MANTEMOS o target="_blank" para abrir em nova aba */}
         {gift.link && (
           <a 
             href={formatLink(gift.link)} 
-            target="_blank" 
-            rel="noopener noreferrer" 
+            onClick={handlePaymentClick} // Aqui chamamos a nossa função inteligente
             className="bg-[#1278BC] text-white py-2 px-4 rounded-[14px] font-semibold text-center flex-1 shadow-md hover:scale-[0.98] transition-transform flex items-center justify-center"
           >
             Cartão
           </a>
         )}
         
-        {/* O botão do PIX se adapta: se tiver Cartão ele divide o espaço (flex-1), se não tiver, ele ocupa tudo (w-full) */}
         <button 
           onClick={() => openModal(gift)} 
           className={`bg-transparent text-[#1a2634] border border-[#1a2634] py-2 px-4 rounded-[14px] font-medium transition-colors hover:bg-[#1a2634] hover:text-white ${gift.link ? 'flex-1' : 'w-full'}`}
@@ -119,7 +130,6 @@ function GiftCard({ gift, openModal }: { gift: Gift; openModal: (g: Gift) => voi
     </div>
   );
 }
-
 // ── 3. GRID PRINCIPAL ──
 export default function GiftGrid() {
   const [allGifts, setAllGifts] = useState<Gift[]>([]);
