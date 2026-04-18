@@ -51,6 +51,13 @@ function SkeletonGiftCard() {
 function GiftCard({ gift, openModal }: { gift: Gift; openModal: (g: Gift) => void }) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  // MÁGICA AQUI: Garante que o link do Mercado Pago sempre comece com https://
+  // Sem isso, se o link for cadastrado apenas como "mpago.la/xyz", o Next.js quebra a nova aba.
+  const formatLink = (url: string | null) => {
+    if (!url) return "#";
+    return url.startsWith("http") ? url : `https://${url}`;
+  };
+
   return (
     <div className="glass-card relative flex flex-col h-full animate-[fadeIn_0.5s_ease-out]">
       {/* Tag de Categoria */}
@@ -89,9 +96,14 @@ function GiftCard({ gift, openModal }: { gift: Gift; openModal: (g: Gift) => voi
 
       {/* Botões */}
       <div className="mt-auto pt-4 flex gap-2">
-        {/* Se o link existir, o botão "Cartão" aparece (seja livre ou fixo) */}
+        {/* Usamos a função formatLink e MANTEMOS o target="_blank" para abrir em nova aba */}
         {gift.link && (
-          <a href={gift.link} target="_blank" rel="noopener noreferrer" className="bg-[#1278BC] text-white py-2 px-4 rounded-[14px] font-semibold text-center flex-1 shadow-md hover:scale-[0.98] transition-transform flex items-center justify-center">
+          <a 
+            href={formatLink(gift.link)} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="bg-[#1278BC] text-white py-2 px-4 rounded-[14px] font-semibold text-center flex-1 shadow-md hover:scale-[0.98] transition-transform flex items-center justify-center"
+          >
             Cartão
           </a>
         )}
