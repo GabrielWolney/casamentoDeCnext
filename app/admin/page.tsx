@@ -14,6 +14,7 @@ import {
 
 import Image from "next/image";
 import { User } from "@supabase/supabase-js";
+import { useAlert } from "@/components/AlertProvider";
 
 
 interface Foto {
@@ -52,6 +53,7 @@ export default function AdminPage() {
   const [presentes, setPresentes] = useState<Presente[]>([]);
   const [editingGift, setEditingGift] = useState<Presente>(INITIAL_GIFT);
   
+  const { showAlert } = useAlert();
   
   const BUCKET_NAME = "casamento-imagens";
 
@@ -94,7 +96,7 @@ export default function AdminPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) alert("Erro: " + error.message);
+    if (error) showAlert("Erro: " + error.message, "error");
   };
 
   const handleLogout = async () => {
@@ -110,7 +112,7 @@ export default function AdminPage() {
       await supabase.from(table).delete().eq("id", id);
       fetchData();
     } catch (err) {
-      alert("Erro ao apagar.");
+      showAlert("Erro ao apagar.", "error");
     }
   };
 
@@ -193,14 +195,14 @@ export default function AdminPage() {
       const { data: { publicUrl } } = supabase.storage.from(BUCKET_NAME).getPublicUrl(fileName);
       setEditingGift({ ...editingGift, image_url: publicUrl });
     } catch (err) {
-      alert("Erro ao subir a imagem do presente.");
+      showAlert("Erro ao subir a imagem do presente.", "error");
     } finally {
       setLoading(false);
     }
   };
 
   const saveGift = async () => {
-    if (!editingGift.image_url) return alert("Por favor, carregue uma imagem para o presente.");
+    if (!editingGift.image_url) return showAlert("Por favor, carregue uma imagem para o presente.", "error");
     setLoading(true);
     try {
       if (editingGift.id) {
@@ -211,7 +213,7 @@ export default function AdminPage() {
       setEditingGift(INITIAL_GIFT);
       fetchData();
     } catch (err) {
-      alert("Erro ao guardar o presente.");
+      showAlert("Erro ao guardar o presente.", "error");
     } finally {
       setLoading(false);
     }
@@ -262,7 +264,6 @@ export default function AdminPage() {
                   <div 
                     {...provided.droppableProps} 
                     ref={provided.innerRef} 
-                    /* A MÁGICA ACONTECE AQUI: Substituímos o -m-3 por gap-6 e p-2 */
                     className="flex flex-wrap justify-start gap-6 min-h-[200px] pt-4 p-2"
                   >
                     {fotos.map((foto, index) => (
@@ -272,7 +273,6 @@ export default function AdminPage() {
                             ref={providedDrag.innerRef} 
                             {...providedDrag.draggableProps} 
                             {...providedDrag.dragHandleProps} 
-                            /* A MÁGICA 2: Tiramos o m-3 daqui para o gap-6 do pai funcionar certinho */
                             className={`relative group w-28 h-36 cursor-grab active:cursor-grabbing transition-transform ${
                               snapshot.isDragging ? 'scale-110 shadow-2xl z-50' : 'hover:scale-105'
                             }`}
@@ -336,12 +336,10 @@ export default function AdminPage() {
                   É cota livre? (Valor livre em PIX)
                 </label>
 
-                {/* O PREÇO some se for cota livre */}
                 {!editingGift.is_custom && (
                   <input placeholder="Preço (R$)" type="number" value={editingGift.price || ""} onChange={e => setEditingGift({...editingGift, price: Number(e.target.value)})} className="w-full p-3 rounded-xl border text-sm outline-none focus:border-[#6B93B8]" />
                 )}
                 
-                {/* O LINK agora aparece para ambos (Valor fixo ou Valor Livre) */}
                 <input placeholder="Link de pagamento (Opcional)" value={editingGift.link || ""} onChange={e => setEditingGift({...editingGift, link: e.target.value})} className="w-full p-3 rounded-xl border text-sm outline-none focus:border-[#6B93B8]" />
                 
                 <div className="flex flex-col gap-2 pt-4">

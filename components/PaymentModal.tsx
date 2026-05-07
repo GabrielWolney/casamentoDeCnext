@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { formatCurrency } from "@/lib/utils";
 import { PixPayload } from "@/lib/pix";
+import { useAlert } from "@/components/AlertProvider";
 
 const CHAVE_PIX = process.env.NEXT_PUBLIC_PIX_KEY!;
 const NOME_NOIVOS = process.env.NEXT_PUBLIC_PIX_NAME!;
@@ -27,6 +28,8 @@ export default function PaymentModal({
   const [currentPixCode, setCurrentPixCode] = useState<string>("");
   const [copied, setCopied] = useState(false);
 
+  const { showAlert } = useAlert();
+
   // ── Bloqueia scroll do body no iOS quando modal está aberto ──
   useEffect(() => {
     if (!isOpen) return;
@@ -48,13 +51,12 @@ export default function PaymentModal({
       setCustomValue("");
       setCopied(false);
       
-      // MÁGICA AQUI: Se for preço fixo, gera o código na hora usando gift.price!
       if (gift && !gift.is_custom && gift.price) {
         const pix = new PixPayload(
           CHAVE_PIX,
           NOME_NOIVOS,
           CIDADE_NOIVOS,
-          "PRESENTE", // Pode colocar a descrição que quiser
+          "PRESENTE",
           gift.price
         );
         setCurrentPixCode(pix.getPayload());
@@ -102,14 +104,12 @@ export default function PaymentModal({
   if (!isOpen || !gift) return null;
 
   const handleCopy = async () => {
-    if (!currentPixCode) return alert("Código inválido ou valor não definido!");
+    if (!currentPixCode) return showAlert("Código inválido ou valor não definido!", "error");
     try {
       await navigator.clipboard.writeText(currentPixCode);
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
-      alert(
-        "Pix copiado com sucesso! \n\nSe quiser envie o comprovante de pagamento no WhatsApp do Davi ou da Camila!"
-      );
+      showAlert("Pix copiado com sucesso! Se quiser envie o comprovante de pagamento no WhatsApp do Davi ou da Camila!", "success");
     } catch (err) {
       console.error("Falha ao copiar:", err);
     }

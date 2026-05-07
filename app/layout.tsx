@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Crimson_Text, Alex_Brush, Poppins } from "next/font/google"; // 1. Adicionamos a Poppins aqui
+import { Crimson_Text, Alex_Brush, Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar"; 
+import Navbar from "@/components/Navbar";
+import { AlertProvider } from "@/components/AlertProvider";
+import AlertsOverlay from "@/components/AlertsOverlay";
 
 const crimson = Crimson_Text({
   subsets: ["latin"],
@@ -17,7 +19,6 @@ const alexBrush = Alex_Brush({
   display: "swap",
 });
 
-// 2. Configuramos a Poppins
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -34,7 +35,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://davi-e-camila.vercel.app'), 
+  metadataBase: new URL('https://davi-e-camila.vercel.app'),
   title: "Camila & Davi — Casamento",
   description: "Temos a alegria de convidar você para o nosso casamento. 04 de Julho de 2026.",
   manifest: "/site.webmanifest",
@@ -44,7 +45,7 @@ export const metadata: Metadata = {
     description: "Você é nosso convidado especial! Confirme sua presença e veja os detalhes do nosso grande dia.",
     siteName: "Casamento Camila & Davi",
     images: [{
-      url: '/share-image.webp', 
+      url: '/share-image.webp',
       width: 1200,
       height: 630,
       alt: 'Convite de Casamento - Camila & Davi',
@@ -66,15 +67,17 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      // 3. Injetamos a variável da Poppins no HTML
       className={`${crimson.variable} ${alexBrush.variable} ${poppins.variable}`}
       suppressHydrationWarning
     >
       <body className="antialiased overflow-hidden w-full h-[100dvh] relative">
+        <AlertProvider>
           <Navbar />
           <main id="main-scroll-container" className="w-full h-full overflow-y-auto overflow-x-hidden relative">
             {children}
           </main>
+          <AlertsOverlay />
+        </AlertProvider>
       </body>
     </html>
   );

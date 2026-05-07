@@ -7,6 +7,7 @@ import { motion, AnimatePresence, useInView } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { SiGooglemaps, SiWaze } from "react-icons/si";
 import PhotoCarousel from "@/components/PhotoCarousel";
+import { useAlert } from "@/components/AlertProvider";
 
 const SCRIPT_URL = process.env.NEXT_PUBLIC_RSVP_SCRIPT_URL!;
 
@@ -56,18 +57,17 @@ export default function ConviteHome() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLDivElement>(null);
 
-  // ── REFS E ESTADOS DA ANIMAÇÃO DO ENVELOPE (A única adição de lógica) ──
   const envelopeRef = useRef<HTMLDivElement>(null);
   const [hasAutoOpened, setHasAutoOpened] = useState(false);
-  
-  // "-75%" no bottom: o envelope só abre quando estiver nos 25% superiores da tela.
+
   const isEnvelopeInView = useInView(envelopeRef, { once: true, margin: "0px 0px -75% 0px" });
 
+  const { showAlert } = useAlert();
+
   useEffect(() => {
-    // Abre automaticamente se estiver na visão correta E se ainda não tiver aberto automaticamente
     if (isEnvelopeInView && !hasAutoOpened) {
       setEnvelopeOpen(true);
-      setHasAutoOpened(true); // Marca que o "cartucho" automático já foi usado
+      setHasAutoOpened(true);
     }
   }, [isEnvelopeInView, hasAutoOpened]);
 
@@ -153,9 +153,9 @@ export default function ConviteHome() {
     const dbName = guestDatabase.find(
       (guest: string) => normalizeText(guest) === normalizeText(guestName),
     );
-    if (!dbName) return alert("Por favor, selecione seu nome na lista.");
+    if (!dbName) return showAlert("Por favor, selecione seu nome na lista.", "error");
     if (!guestEmail.includes("@"))
-      return alert("Por favor, insira um e-mail válido.");
+      return showAlert("Por favor, insira um e-mail válido.", "error");
 
     setIsSubmitting(true);
     const formData = new FormData();
@@ -167,16 +167,16 @@ export default function ConviteHome() {
       const data = await res.json();
 
       if (data.result === "success") {
-        alert(`Presença confirmada! Enviamos um e-mail para ${guestEmail}.`);
+        showAlert(`Presença confirmada! Enviamos um e-mail para ${guestEmail}.`, "success");
         setGuestName("");
         setGuestEmail("");
       } else if (data.result === "already_confirmed") {
-        alert("Você já está confirmado em nossa lista! Mal podemos esperar!");
+        showAlert("Você já está confirmado em nossa lista! Mal podemos esperar!", "success");
         setGuestName("");
         setGuestEmail("");
       }
     } catch (error) {
-      alert("Erro ao confirmar presença.");
+      showAlert("Erro ao confirmar presença.", "error");
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -205,7 +205,6 @@ export default function ConviteHome() {
             `,
           }}
         />
-        {/* Noise texture sutil */}
         <div
           className="absolute inset-0 opacity-[0.05] mix-blend-multiply"
           style={{
@@ -264,7 +263,6 @@ export default function ConviteHome() {
           </section>
 
           {/* 3. RSVP */}
-          {/* No mobile: w-full max-w-95 mb-16. No PC: max-w-2xl mb-24 */}
           <section className="w-full max-w-95 md:max-w-2xl px-6 mb-16 md:mb-24 relative">
             <div
               className={`${glassStyle} rounded-[35px] p-8 flex flex-col items-center`}
@@ -273,7 +271,6 @@ export default function ConviteHome() {
                 Confirme sua presença
               </h2>
               <div className="w-full space-y-4">
-                {/* Campo nome com ref para fechar dropdown ao clicar fora */}
                 <div ref={nameInputRef} className="relative">
                   <label className="text-[0.65rem] font-bold text-[#7BC0E3] tracking-widest block mb-2 ml-4 uppercase">
                     Nome
@@ -328,14 +325,13 @@ export default function ConviteHome() {
           </section>
 
           {/* 4. ENVELOPE */}
-          {/* No mobile: mb-16. No PC: mb-24 */}
           <section
             id="cerimonia"
             className="w-full max-w-130 px-4 mb-16 md:mb-24 flex flex-col items-center relative scroll-mt-32"
             style={{ isolation: "isolate" }}
           >
             <motion.div
-              ref={envelopeRef} // <-- COLOCADO AQUI PARA A MÁGICA FUNCIONAR
+              ref={envelopeRef}
               layout
               onClick={() => setEnvelopeOpen(!envelopeOpen)}
               className="w-[82%] max-w-120 bg-white rounded-t-[20px] shadow-sm pt-12 pb-36 px-8 text-center relative z-10 cursor-pointer overflow-hidden border-t border-x border-gray-100"
@@ -369,7 +365,7 @@ export default function ConviteHome() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }} // Aumento do delay para a animação ficar no ritmo correto
+                    transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
                     className="space-y-12 pb-10"
                   >
                     <div className="h-px bg-gray-100 w-full" />
@@ -493,7 +489,6 @@ export default function ConviteHome() {
           </section>
 
           {/* 5. DRESS CODE */}
-          {/* No mobile: max-w-95 mb-16. No PC: max-w-2xl mb-24 */}
           <section className="w-full max-w-95 md:max-w-2xl px-6 mb-16 md:mb-24 relative">
             <div
               className={`${glassStyle} rounded-[35px] p-8 flex flex-col items-center text-center`}
@@ -544,7 +539,6 @@ export default function ConviteHome() {
         </div>
 
         <footer className="w-full text-center pb-12 pt-8 mt-10 relative z-10 flex flex-col items-center">
-          {/* Linha divisória suave com gradiente */}
           <div className="w-24 h-px bg-gradient-to-r from-transparent via-[#1278BC]/30 to-transparent mb-6" />
 
           <p className="font-[family-name:var(--font-crimson)] text-2xl text-[#1a2634]/70 italic">

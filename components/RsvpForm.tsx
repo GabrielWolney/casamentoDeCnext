@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useAlert } from "@/components/AlertProvider";
 
 // SUAS CONFIGURAÇÕES
 const SCRIPT_URL = process.env.NEXT_PUBLIC_RSVP_SCRIPT_URL!;
@@ -19,6 +20,8 @@ export default function RsvpForm() {
   const containerRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLDivElement>(null);
 
+  const { showAlert } = useAlert();
+
   // Carrega a lista do Google Sheets ao montar
   useEffect(() => {
     async function loadGuests() {
@@ -33,7 +36,7 @@ export default function RsvpForm() {
     loadGuests();
   }, []);
 
-  // Fecha o dropdown se clicar fora (agora usando a ref correta do container)
+  // Fecha o dropdown se clicar fora
   useEffect(() => {
     const close = (e: MouseEvent | TouchEvent) => {
       if (nameInputRef.current && !nameInputRef.current.contains(e.target as Node)) {
@@ -76,12 +79,12 @@ export default function RsvpForm() {
     e.preventDefault();
     const nameToSubmit = normalizeText(guestName);
 
-    if (!nameToSubmit) return alert("Por favor, digite seu nome.");
+    if (!nameToSubmit) return showAlert("Por favor, digite seu nome.", "error");
 
     const dbName = guestDatabase.find(guest => normalizeText(guest) === nameToSubmit);
     
     if (!dbName) {
-      return alert("Nome não encontrado na lista ou já confirmado.");
+      return showAlert("Nome não encontrado na lista ou já confirmado.", "error");
     }
 
     setIsSubmitting(true);
@@ -95,7 +98,7 @@ export default function RsvpForm() {
       const data = await response.json();
 
       if (data.result === "success") {
-        alert(`Presença confirmada! Obrigado, ${dbName}.`);
+        showAlert(`Presença confirmada! Obrigado, ${dbName}.`, "success");
         setGuestName("");
         setStatusMessage("Confirmado!");
         setGuestDatabase(prev => prev.filter(g => g !== dbName));
@@ -104,7 +107,7 @@ export default function RsvpForm() {
       }
     } catch (error) {
       console.error(error);
-      alert("Erro de conexão. Tente novamente.");
+      showAlert("Erro de conexão. Tente novamente.", "error");
       setStatusMessage("Erro ao confirmar");
     } finally {
       setTimeout(() => {
@@ -122,7 +125,6 @@ export default function RsvpForm() {
       
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         
-        {/* Usando o nameInputRef corretamente aqui para o clique fora funcionar */}
         <div ref={nameInputRef} className="relative w-full">
           <label htmlFor="guestName" className="block font-body text-xs font-semibold uppercase tracking-[1px] text-primary-blue mb-2 ml-1">
             Nome
@@ -135,14 +137,11 @@ export default function RsvpForm() {
             onChange={(e) => setGuestName(e.target.value)}
             onFocus={() => { if (matches.length > 0) setShowDropdown(true); }}
             placeholder="Busque seu nome..."
-            /* Impede o navegador de tentar jogar o autocompletar feio do sistema por cima */
-            autoComplete="new-password" 
+            autoComplete="new-password"
             required
-            /* text-[16px] É A REGRA DE OURO PARA O IPHONE NÃO DAR ZOOM */
             className="w-full p-3.5 px-5 rounded-xl bg-white/50 border border-white/60 backdrop-blur-md font-body text-[16px] text-deep-blue outline-none transition-all duration-400 focus:bg-white/80 focus:border-[#7BC0E3] focus:shadow-[0_0_15px_rgba(123,192,227,0.25)] focus:-translate-y-[1px]"
           />
 
-          {/* Autocomplete Dropdown - Redesenhado */}
           {showDropdown && (
             <ul 
               className="absolute top-[105%] left-0 right-0 z-[9999] bg-white/95 backdrop-blur-xl rounded-xl shadow-[0_15px_35px_rgba(0,0,0,0.15)] max-h-[220px] overflow-y-auto py-2 list-none m-0"
@@ -153,7 +152,6 @@ export default function RsvpForm() {
                   key={idx}
                   onClick={() => handleSelectGuest(name)}
                   className="px-5 py-3 cursor-pointer text-[16px] text-gray-700 transition-colors duration-200 hover:bg-[#F4F9FD] hover:text-[#1278BC] font-medium"
-                  /* O style inline esmaga qualquer linha preta global que tenha ficado presa no cache */
                   style={{ border: "none", borderBottom: "none", outline: "none" }}
                 >
                   {name}
@@ -163,7 +161,6 @@ export default function RsvpForm() {
           )}
         </div>
 
-        {/* Esse div vazio estava gerando uma margem desnecessária, vamos garantir que o botão fique bem posicionado */}
         <button
           type="submit"
           disabled={isSubmitting}
