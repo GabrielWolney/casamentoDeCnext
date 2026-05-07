@@ -36,12 +36,12 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://davi-e-camila.vercel.app'),
-  title: "Camila & Davi — Casamento",
+  title: "Camila & Davi — Convite de Casamento",
   description: "Temos a alegria de convidar você para o nosso casamento. 04 de Julho de 2026.",
   manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
-    title: "Camila & Davi — Nosso Casamento",
+    title: "Camila & Davi — Convite de Casamento",
     description: "Você é nosso convidado especial! Confirme sua presença e veja os detalhes do nosso grande dia.",
     siteName: "Casamento Camila & Davi",
     images: [{
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Camila & Davi — Nosso Casamento",
+    title: "Camila & Davi — Convite de Casamento",
     description: "Confirme sua presença e veja os detalhes do nosso grande dia.",
     images: ['/share-image.webp'],
   },
